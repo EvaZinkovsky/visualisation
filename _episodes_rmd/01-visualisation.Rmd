@@ -26,7 +26,6 @@ library(agridat)
 library(grid)
 library(gridExtra)
 library(png)
-library(hexbin)
 data <- read_csv("../data/datasets.csv")
 data_12 <- data %>% 
   filter(dataset != 4)
@@ -45,12 +44,9 @@ comb2pngs <- function(imgs, bottom_text = NULL){
 
 Let's meet a dataset:
 
-```{r intro, include=FALSE}
+```{r intro, echo=FALSE}
 data
-```
-
-
-Let's get an idea of its structure:
+```^M^MLet's get an idea of its structure:
 
 ```{r summary}
 summary(data)
@@ -70,127 +66,46 @@ Some more examples of why data visualisation is so valuable:
 
 * mean in both dimensions
 * sd in both dimensions
-* correlation between x and y
-
-
-
-**But...**
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-```{r scatter12, echo=FALSE}
+* correlation between x and y^M^M**But...**^M^M```{r scatter12, echo=FALSE}
 ggplot(data_12, aes(x, y)) +
   geom_point() +
   facet_wrap(~dataset)
-```
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-## The roles of data visualisation 
+```^M^M## The roles of data visualisation 
 
 In general there are two purposes behind data visualisations:
 
 * As a discovery tool, to explore a dataset
-* As a storytelling tool, to highlight features of a dataset
-
-&nbsp;
-
-&nbsp;
-
-> In both cases, successful visualisation will 
+* As a storytelling tool, to highlight features of a dataset^M^M> In both cases, successful visualisation will 
 > illuminate and aid understanding, 
-> not confuse or obscure.
+> not confuse or obscure.^M^M> ## Discussion - What is a data visualisation? 
+> 
+> What is the difference between panel E and the other panels in the following figure?
+> 
+> <img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
+{: .discussion}^M^M## Straight to a classic^M^M[![minard](../fig/minard.png)](../fig/minard.png)
 
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Exercise - What is a data visualisation?
-
-What is the difference between panel E and the other panels in the following figure?
-
-<img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Straight to a classic
-
-&nbsp;
-
-![](../fig/minard.jpg)
-
-### Exercise:
-
-- What are the data elements contributing to this plot?
-- How are they each visually represented?
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## A modern example
-
-![](../fig/mayer2017.PNG)
-
-### Exercise:
-
-- How are the data elements linked to visual elements?
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Another example
+> ## Challenge
+>
+> What are the data elements contributing to this plot?
+>
+> How are they each visually represented?
+> 
+> > ## Solution
+> > Data Variable | Visual Component
+> > --------------|----------------
+> > Longitude | x Axis
+> > Latitude | y Axis
+> > Number of troops | Line width
+> > Direction of travel | Line colour
+> > Temperature | y Axis (bottom chart)
+> > Date | Text 
+>{: .solution}
+{: .challenge}^M^M> ## A modern example?
+> 
+> ![](../fig/mayer2017.PNG)
+> 
+> How are the data elements linked to visual elements?
+{: .callout}^M^M## Another example
 ```{r echo=FALSE, fig.width=15}
 p1 <- ggplot(diamonds, aes(carat, price)) +
   geom_point()
@@ -203,19 +118,12 @@ p2 <- p1 +
 grid.arrange(p1, p2, ncol = 2)
 ```
 
-### Exercise:
-
-Compare the two plots above
-- How are the data elements linked to the visual elements?
-- What is the difference between the two?
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-```{r echo = FALSE, fig.width=15, cache=FALSE}
+> ## Challenge 
+> 
+> Compare the two plots above
+> - How are the data elements linked to the visual elements?
+> - What is the difference between the two?
+{: .callout}^M^M```{r echo = FALSE, fig.width=15, cache=FALSE}
 harris.multi.uniformity %>% 
   filter(crop %in% c("barley", "straw"),
          year > 1917) %>% 
@@ -231,50 +139,25 @@ p2 <- ggplot(dat_sum, aes(year, mean_yield, fill = crop, colour = crop, group = 
 grid.arrange(p1, p2, nrow = 1)
 ```
 
-### Exercise:
-
-Compare the two plots above
-- How are the data elements linked to the visual elements?
-- What is the difference between the two?
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-
-## Considerations for quality graphs:
+> ## Challenge
+> 
+> Compare the two plots above
+> How are the data elements linked to the visual elements?
+> What is the difference between the two?
+> Do either of them tell a story more clearly?
+{: .callout}^M^M## Considerations for quality graphs:
 
 ### Ink to information ratio
 
 Compare the amount of ink used with the amount of information communicated. A high ink:information can indicate a plot that hasn't been thought through, and is often distracting or confusing. 
 
-These plots often contain 'chart junk' (Edward Tufte).
-
-
-&nbsp;
-
-<img src="../fig/high-ink.PNG" width="425"/> <img src="../fig/low-ink.PNG" width="425"/> 
+These plots often contain 'chart junk' (Edward Tufte).^M^M<img src="../fig/high-ink.PNG" width="425"/> <img src="../fig/low-ink.PNG" width="425"/> 
 
 ## Exercise
 
 Compare the above figure. 
 - Which elements are removed in the left version?
-- Which elements could still be removed? What is their purpose?
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Some common errors in visualisation
-
-
-### Overplotting
+- Which elements could still be removed? What is their purpose?^M^M## Some common errors in visualisation^M^M### Overplotting
 
 When there are too many data points...
 
@@ -283,34 +166,9 @@ ggplot(diamonds, aes(carat, price)) +
   geom_point() +
   scale_y_log10() +
   scale_x_log10()
-```
+```^M^M## Exercise
 
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Exercise
-
-- What are some possible solutions to overplotting?
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-### Transparency
+- What are some possible solutions to overplotting?^M^M### Transparency
 
 ```{r echo=FALSE}
 ggplot(diamonds, aes(carat, price)) +
@@ -336,7 +194,4 @@ p1 <- ggplot(diamonds, aes(cut, price)) +
   geom_point()
 p2 <- ggplot(diamonds, aes(cut, price)) +
   geom_point(position = "jitter")
-grid.arrange(p1, p2, ncol = 2)
-
-
-
+grid.arrange(p1, p2, ncol = 2)^M^M
