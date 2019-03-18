@@ -46,7 +46,9 @@ Let's meet a dataset:
 
 ```{r intro, echo=FALSE}
 data
-```^M^MLet's get an idea of its structure:
+```
+
+Let's get an idea of its structure:
 
 ```{r summary}
 summary(data)
@@ -66,23 +68,36 @@ Some more examples of why data visualisation is so valuable:
 
 * mean in both dimensions
 * sd in both dimensions
-* correlation between x and y^M^M**But...**^M^M```{r scatter12, echo=FALSE}
+* correlation between x and y
+
+**But...**
+
+```{r scatter12, echo=FALSE}
 ggplot(data_12, aes(x, y)) +
   geom_point() +
   facet_wrap(~dataset)
-```^M^M## The roles of data visualisation 
+```
+
+## The roles of data visualisation 
 
 In general there are two purposes behind data visualisations:
 
 * As a discovery tool, to explore a dataset
-* As a storytelling tool, to highlight features of a dataset^M^M> In both cases, successful visualisation will 
-> illuminate and aid understanding, 
-> not confuse or obscure.^M^M> ## Discussion - What is a data visualisation? 
+* As a storytelling tool, to highlight features of a dataset
+In both cases, successful visualisation will 
+illuminate and aid understanding, 
+not confuse or obscure.
+
+> ## Discussion - What is a data visualisation? 
 > 
 > What is the difference between panel E and the other panels in the following figure?
 > 
 > <img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
-{: .discussion}^M^M## Straight to a classic^M^M[![minard](../fig/minard.png)](../fig/minard.png)
+{: .discussion}
+
+
+## Straight to a classic
+[![minard](../fig/minard.png)](../fig/minard.png)
 
 > ## Challenge
 >
@@ -100,12 +115,14 @@ In general there are two purposes behind data visualisations:
 > > Temperature | y Axis (bottom chart)
 > > Date | Text 
 >{: .solution}
-{: .challenge}^M^M> ## A modern example?
+{: .challenge}
+> ## A modern example?
 > 
 > ![](../fig/mayer2017.PNG)
 > 
 > How are the data elements linked to visual elements?
-{: .callout}^M^M## Another example
+{: .callout}
+## Another example
 ```{r echo=FALSE, fig.width=15}
 p1 <- ggplot(diamonds, aes(carat, price)) +
   geom_point()
@@ -123,7 +140,8 @@ grid.arrange(p1, p2, ncol = 2)
 > Compare the two plots above
 > - How are the data elements linked to the visual elements?
 > - What is the difference between the two?
-{: .callout}^M^M```{r echo = FALSE, fig.width=15, cache=FALSE}
+{: .callout}
+```{r echo = FALSE, fig.width=15, cache=FALSE}
 harris.multi.uniformity %>% 
   filter(crop %in% c("barley", "straw"),
          year > 1917) %>% 
@@ -145,53 +163,4 @@ grid.arrange(p1, p2, nrow = 1)
 > How are the data elements linked to the visual elements?
 > What is the difference between the two?
 > Do either of them tell a story more clearly?
-{: .callout}^M^M## Considerations for quality graphs:
-
-### Ink to information ratio
-
-Compare the amount of ink used with the amount of information communicated. A high ink:information can indicate a plot that hasn't been thought through, and is often distracting or confusing. 
-
-These plots often contain 'chart junk' (Edward Tufte).^M^M<img src="../fig/high-ink.PNG" width="425"/> <img src="../fig/low-ink.PNG" width="425"/> 
-
-## Exercise
-
-Compare the above figure. 
-- Which elements are removed in the left version?
-- Which elements could still be removed? What is their purpose?^M^M## Some common errors in visualisation^M^M### Overplotting
-
-When there are too many data points...
-
-```{r echo=FALSE}
-ggplot(diamonds, aes(carat, price)) +
-  geom_point() +
-  scale_y_log10() +
-  scale_x_log10()
-```^M^M## Exercise
-
-- What are some possible solutions to overplotting?^M^M### Transparency
-
-```{r echo=FALSE}
-ggplot(diamonds, aes(carat, price)) +
-  geom_point(alpha = 0.05) +
-  scale_y_log10() +
-  scale_x_log10()
-```
-
-### Binning
-
-```{r echo=FALSE}
-ggplot(diamonds, aes(carat, price)) +
-  geom_hex() +
-  scale_y_log10() +
-  scale_x_log10() +
-  scale_fill_viridis_c()
-```
-
-### Jittering
-
-```{r echo=FALSE, fig.width=15}
-p1 <- ggplot(diamonds, aes(cut, price)) +
-  geom_point()
-p2 <- ggplot(diamonds, aes(cut, price)) +
-  geom_point(position = "jitter")
-grid.arrange(p1, p2, ncol = 2)^M^M
+{: .callout}
