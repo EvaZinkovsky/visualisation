@@ -60,11 +60,13 @@ Before making some plots, let's get our brains back into R mode:
 >
 > Open a new script and use `read_csv` to read in the gapminder data and assign it to a variable called `gapminder`.
 > (Hint: `read_csv` can be accessed through the `tidyverse` package).
+>
+> Commit the script to the repository
 {: .challenge}
 
-```{r setup}
+```{r setup, message=FALSE, warning=FALSE}
 library(tidyverse)
-gapminder <- read_csv("../data/gapminder_data.csv", header = TRUE)
+gapminder <- read_csv("../data/gapminder_data.csv")
 ```
 
 We'll work with the gapminder dataset to make several plots to explore the data and tell a story.
@@ -88,9 +90,7 @@ earlier. For the second argument we passed in the `aes` function, which
 tells `ggplot` how variables in the **data** map to *aesthetic* properties of
 the figure, in this case the **x** and **y** locations. Here we told `ggplot` we
 want to plot the "gdpPercap" column of the gapminder data frame on the x-axis, and
-the "lifeExp" column on the y-axis. Notice that we didn't need to explicitly
-pass `aes` these columns (e.g. `x = gapminder[, "gdpPercap"]`), this is because
-`ggplot` is smart enough to know to look in the **data** for that column!
+the "lifeExp" column on the y-axis. 
 
 By itself, the call to `ggplot` isn't enough to draw a figure:
 
@@ -407,7 +407,7 @@ code to modify!
 
 > ## Challenge 5
 >
-> Create a density plot of GDP per capita, filled by continent.
+> Create a density plot of population, filled by continent.
 >
 > Advanced:
 >  - Transform the x axis to better visualise the data spread.
@@ -415,15 +415,19 @@ code to modify!
 >
 > > ## Solution to challenge 5
 > >
-> > Create a density plot of GDP per capita, filled by continent.
+> > Create a density plot of population, filled by continent.
 > >
 > > Advanced:
 > >  - Transform the x axis to better visualise the data spread.
 > >  - Add a facet layer to panel the density plots by year.
 > >
 > > ```{r ch5-sol}
-> > ggplot(data = gapminder, aes(x = gdpPercap, fill=continent)) +
-> >  geom_density(alpha=0.6) + facet_wrap( ~ year) + scale_x_log10()
+> > ggplot(data = gapminder, aes(x = pop, fill=continent)) +
+> >  geom_density(alpha=0.6) + 
+> >  facet_wrap( ~ year) + 
+> >  scale_x_log10()
 > > ```
 > {: .solution}
 {: .challenge}
+
+
