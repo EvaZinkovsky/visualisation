@@ -27,13 +27,6 @@ Let's meet a dataset:
 
 
 ~~~
-data
-~~~
-{: .language-r}
-
-
-
-~~~
 # A tibble: 142 x 3
    dataset     x     y
      <dbl> <dbl> <dbl>
@@ -50,7 +43,6 @@ data
 # … with 132 more rows
 ~~~
 {: .output}
-
 
 Let's get an idea of its structure:
 
@@ -85,29 +77,9 @@ Some more examples of why data visualisation is so valuable:
 * sd in both dimensions
 * correlation between x and y
 
-
-
 **But...**
 
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
 <img src="../fig/rmd-01-scatter12-1.png" title="plot of chunk scatter12" alt="plot of chunk scatter12" width="612" style="display: block; margin: auto;" />
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
 
 ## The roles of data visualisation 
 
@@ -115,189 +87,59 @@ In general there are two purposes behind data visualisations:
 
 * As a discovery tool, to explore a dataset
 * As a storytelling tool, to highlight features of a dataset
+In both cases, successful visualisation will 
+illuminate and aid understanding, 
+not confuse or obscure.
 
-&nbsp;
+> ## Discussion - What is a data visualisation? 
+> 
+> What is the difference between panel E and the other panels in the following figure?
+> 
+> <img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
+{: .discussion}
 
-&nbsp;
-
-> In both cases, successful visualisation will 
-> illuminate and aid understanding, 
-> not confuse or obscure.
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Exercise - What is a data visualisation?
-
-What is the difference between panel E and the other panels in the following figure?
-
-<img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
 
 ## Straight to a classic
+[![minard](../fig/minard.png)](../fig/minard.png)
 
-&nbsp;
-
-![](../fig/minard.jpg)
-
-### Exercise:
-
-- What are the data elements contributing to this plot?
-- How are they each visually represented?
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## A modern example
-
-![](../fig/mayer2017.PNG)
-
-### Exercise:
-
-- How are the data elements linked to visual elements?
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
+> ## Challenge
+>
+> What are the data elements contributing to this plot?
+>
+> How are they each visually represented?
+> 
+> > ## Solution
+> > Data Variable | Visual Component
+> > --------------|----------------
+> > Longitude | x Axis
+> > Latitude | y Axis
+> > Number of troops | Line width
+> > Direction of travel | Line colour
+> > Temperature | y Axis (bottom chart)
+> > Date | Text 
+>{: .solution}
+{: .challenge}
+> ## A modern example?
+> 
+> ![](../fig/mayer2017.PNG)
+> 
+> How are the data elements linked to visual elements?
+{: .callout}
 ## Another example
 <img src="../fig/rmd-01-unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="1080" style="display: block; margin: auto;" />
 
-### Exercise:
-
-Compare the two plots above
-- How are the data elements linked to the visual elements?
-- What is the difference between the two?
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
+> ## Challenge 
+> 
+> Compare the two plots above
+> - How are the data elements linked to the visual elements?
+> - What is the difference between the two?
+{: .callout}
 <img src="../fig/rmd-01-unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="1080" style="display: block; margin: auto;" />
 
-### Exercise:
-
-Compare the two plots above
-- How are the data elements linked to the visual elements?
-- What is the difference between the two?
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-
-## Considerations for quality graphs:
-
-### Ink to information ratio
-
-Compare the amount of ink used with the amount of information communicated. A high ink:information can indicate a plot that hasn't been thought through, and is often distracting or confusing. 
-
-These plots often contain 'chart junk' (Edward Tufte).
-
-
-&nbsp;
-
-<img src="../fig/high-ink.PNG" width="425"/> <img src="../fig/low-ink.PNG" width="425"/> 
-
-## Exercise
-
-Compare the above figure. 
-- Which elements are removed in the left version?
-- Which elements could still be removed? What is their purpose?
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Some common errors in visualisation
-
-
-### Overplotting
-
-When there are too many data points...
-
-<img src="../fig/rmd-01-unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="612" style="display: block; margin: auto;" />
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-## Exercise
-
-- What are some possible solutions to overplotting?
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
-
-### Transparency
-
-<img src="../fig/rmd-01-unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="612" style="display: block; margin: auto;" />
-
-### Binning
-
-<img src="../fig/rmd-01-unnamed-chunk-5-1.png" title="plot of chunk unnamed-chunk-5" alt="plot of chunk unnamed-chunk-5" width="612" style="display: block; margin: auto;" />
-
-### Jittering
-
-<img src="../fig/rmd-01-unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" width="1080" style="display: block; margin: auto;" />
+> ## Challenge
+> 
+> Compare the two plots above
+> How are the data elements linked to the visual elements?
+> What is the difference between the two?
+> Do either of them tell a story more clearly?
+{: .callout}
