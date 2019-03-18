@@ -1,0 +1,342 @@
+---
+title: Introduction to Visualisation
+teaching: 60
+exercises: 60
+questions:
+- "What are the basic building blocks of visualisation"
+objectives:
+- "To be able to identify the links between a data visualisation and the underlying data structure"
+- "To recognise the common visual features of a visualisation"
+- "To be able to restrict visual elements to only those that are necessary"
+keypoints:
+- "Visualisation is valuable"
+- "There are common elements that link data to visual properties"
+- "By mapping data attributes to visual attributes clearer visualisation is possible"
+source: Rmd
+---
+
+```{r chunk_options, include=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("01-")
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(agridat)
+library(grid)
+library(gridExtra)
+library(png)
+library(hexbin)
+data <- read_csv("../data/datasets.csv")
+data_12 <- data %>% 
+  filter(dataset != 4)
+data <- data %>%
+  filter(dataset == 4)
+comb2pngs <- function(imgs, bottom_text = NULL){
+  img1 <-  grid::rasterGrob(as.raster(readPNG(imgs[1])),
+                            interpolate = FALSE)
+  img2 <-  grid::rasterGrob(as.raster(readPNG(imgs[2])),
+                            interpolate = FALSE)
+  grid.arrange(img1, img2, ncol = 2, bottom = bottom_text)
+}
+```
+
+## Why visualisation?
+
+Let's meet a dataset:
+
+```{r intro, include=FALSE}
+data
+```
+
+
+Let's get an idea of its structure:
+
+```{r summary}
+summary(data)
+```
+
+One little scatterplot:
+
+```{r scatter, echo=FALSE}
+ggplot(data, aes(x, y)) +
+  geom_point() +
+  theme(aspect.ratio = 1)
+```
+
+Some more examples of why data visualisation is so valuable:
+
+[The datasaur dozen](https://www.autodeskresearch.com/publications/samestats]. ) group of 12 two-dimensional datasets that have identical:
+
+* mean in both dimensions
+* sd in both dimensions
+* correlation between x and y
+
+
+
+**But...**
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+```{r scatter12, echo=FALSE}
+ggplot(data_12, aes(x, y)) +
+  geom_point() +
+  facet_wrap(~dataset)
+```
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+## The roles of data visualisation 
+
+In general there are two purposes behind data visualisations:
+
+* As a discovery tool, to explore a dataset
+* As a storytelling tool, to highlight features of a dataset
+
+&nbsp;
+
+&nbsp;
+
+> In both cases, successful visualisation will 
+> illuminate and aid understanding, 
+> not confuse or obscure.
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+## Exercise - What is a data visualisation?
+
+What is the difference between panel E and the other panels in the following figure?
+
+<img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
+
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+## Straight to a classic
+
+&nbsp;
+
+![](../fig/minard.jpg)
+
+### Exercise:
+
+- What are the data elements contributing to this plot?
+- How are they each visually represented?
+
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+## A modern example
+
+![](../fig/mayer2017.PNG)
+
+### Exercise:
+
+- How are the data elements linked to visual elements?
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+## Another example
+```{r echo=FALSE, fig.width=15}
+p1 <- ggplot(diamonds, aes(carat, price)) +
+  geom_point()
+p2 <- p1 +
+  scale_y_log10() +
+  scale_x_log10(
+    breaks = scales::trans_breaks("log10", function(x) 10^x),
+   labels = scales::trans_format("log10", scales::math_format(10^.x))
+  ) + annotation_logticks()
+grid.arrange(p1, p2, ncol = 2)
+```
+
+### Exercise:
+
+Compare the two plots above
+- How are the data elements linked to the visual elements?
+- What is the difference between the two?
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+```{r echo = FALSE, fig.width=15, cache=FALSE}
+harris.multi.uniformity %>% 
+  filter(crop %in% c("barley", "straw"),
+         year > 1917) %>% 
+  group_by(year, crop) %>% 
+  summarise(mean_yield = mean(yield)) %>% 
+  ungroup %>% 
+  mutate(year = as.factor(year)) -> dat_sum
+p1 <- ggplot(dat_sum, aes(year, mean_yield, fill = crop, colour = crop, group = crop)) +
+  geom_bar(stat = "identity", position = "dodge")
+
+p2 <- ggplot(dat_sum, aes(year, mean_yield, fill = crop, colour = crop, group = crop)) +
+  geom_line()
+grid.arrange(p1, p2, nrow = 1)
+```
+
+### Exercise:
+
+Compare the two plots above
+- How are the data elements linked to the visual elements?
+- What is the difference between the two?
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+
+## Considerations for quality graphs:
+
+### Ink to information ratio
+
+Compare the amount of ink used with the amount of information communicated. A high ink:information can indicate a plot that hasn't been thought through, and is often distracting or confusing. 
+
+These plots often contain 'chart junk' (Edward Tufte).
+
+
+&nbsp;
+
+<img src="../fig/high-ink.PNG" width="425"/> <img src="../fig/low-ink.PNG" width="425"/> 
+
+## Exercise
+
+Compare the above figure. 
+- Which elements are removed in the left version?
+- Which elements could still be removed? What is their purpose?
+
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+## Some common errors in visualisation
+
+
+### Overplotting
+
+When there are too many data points...
+
+```{r echo=FALSE}
+ggplot(diamonds, aes(carat, price)) +
+  geom_point() +
+  scale_y_log10() +
+  scale_x_log10()
+```
+
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+## Exercise
+
+- What are some possible solutions to overplotting?
+
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+### Transparency
+
+```{r echo=FALSE}
+ggplot(diamonds, aes(carat, price)) +
+  geom_point(alpha = 0.05) +
+  scale_y_log10() +
+  scale_x_log10()
+```
+
+### Binning
+
+```{r echo=FALSE}
+ggplot(diamonds, aes(carat, price)) +
+  geom_hex() +
+  scale_y_log10() +
+  scale_x_log10() +
+  scale_fill_viridis_c()
+```
+
+### Jittering
+
+```{r echo=FALSE, fig.width=15}
+p1 <- ggplot(diamonds, aes(cut, price)) +
+  geom_point()
+p2 <- ggplot(diamonds, aes(cut, price)) +
+  geom_point(position = "jitter")
+grid.arrange(p1, p2, ncol = 2)
+
+
+
