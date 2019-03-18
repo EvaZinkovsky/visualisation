@@ -107,7 +107,7 @@ not confuse or obscure.
 > 
 > > ## Solution
 > > Data Variable | Visual Component
-> > --------------|----------------
+> > :-------------|:---------------
 > > Longitude | x Axis
 > > Latitude | y Axis
 > > Number of troops | Line width
