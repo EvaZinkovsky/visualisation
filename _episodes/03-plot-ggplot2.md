@@ -508,3 +508,9 @@ code to modify!
 {: .challenge}
 
 
+> ## Challenge 6 - Advanced
+>
+> Use the `agridat` package to visualise some agricultural data.
+>
+> Explore the `blackman.wheat` dataset from `agridat`. Generate a plot that shows the effect of fertiliser treatment across genotypes (`gen`) and sites (`loc`).
+{: .challenge}
