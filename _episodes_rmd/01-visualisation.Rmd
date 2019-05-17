@@ -139,6 +139,7 @@ to represent the data
 >
 >
 > **Geometry:**
+>
 > The physical representation of your data. Points, lines, and bars are examples of geometries
 > that could be used to illustrate the data in a figure.
 {:.callout}
@@ -184,7 +185,7 @@ approach with a more recent figure.
 > 
 > List the data elements and visual aesthetics of the above figure. 
 > 
-> How they are linked together? What does this linking tell you about the figure? 
+> How they are linked together? Do you notice anything unusual about this linking? 
 > > ## Solution
 > > 
 > > **Data Variable** | **Visual Component**
@@ -199,10 +200,110 @@ approach with a more recent figure.
 > {: .solution}
 {: .challenge}
 
+Working on a single figure at a time doesn't give a good idea of how *changes* to the aesthetics or
+geometries can affect a figure. Changing either of these components can hide or reveal information, 
+and can sometimes completely change the story your figure is telling.
 
+Consider the following set:
+
+#### Changing aesthetics 
+```{r changing_aesthetics, echo = F, out.width="100%", warning=F, fig.height=4}
+p <- ggplot(mtcars) + labs(x="weight", y="fuel efficiency (mpg)", colour="cylinders") + theme(legend.position = "bottom")
+
+p1 <- p + geom_point(aes(x=wt, y = mpg, colour = factor(cyl)))
+
+p2 <- p + geom_point(aes(x=wt, y = mpg, size = factor(cyl))) + labs(size = "cylinders")
+
+p3 <- p + geom_point(aes(x=wt, y = cyl, colour = mpg)) + 
+  labs(x="weight", y="cylinders", colour="fuel efficiency (mpg)") +
+  scale_color_viridis_c()
+
+p1 + p2 + p3
+```
+
+
+> ## Challenge
+> 
+> List the data elements, visual aesthetics, and geometries of the above figure to convince yourself
+> that the only changes are in the **mappings** of the data to aesthetics. 
+>
+> > ## Solution
+> > Left figure:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Weight | x Axis
+> > Fuel efficiency | y Axis
+> > No. of cylinders | Colour
+> >
+> > Middle Figure:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Weight | x Axis
+> > Fuel efficiency | y Axis
+> > No. of cylinders | Size
+> >
+> > Right figure:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Weight | x Axis
+> > No. of cylinders | y Asis
+> > Fuel efficiency | Colour
+> >
+> > Each of these figures uses a **point** geometry
+>{:.solution}
+{:.challenge}
+
+#### Changing geometries
+
+```{r changing_geometries, echo = F, out.width="100%", warning=F, fig.height=4}
+base_geom <- agridat::harris.wateruse %>% 
+  group_by(species, day) %>% 
+  summarise(mean_water_use = mean(water)) %>% 
+  ungroup %>% 
+  filter(day > 270) %>% 
+  ggplot(aes(x=day, y = mean_water_use, fill = species, colour = species)) +
+  labs(y = "mean water use") +
+  scale_color_brewer(palette="Dark2") +
+  scale_fill_brewer(palette="Dark2") +
+  theme(legend.position = "bottom")
+
+p1 <- base_geom + geom_col(position = "dodge")
+p2 <- base_geom + geom_line()
+p3 <- base_geom + geom_point()
+
+p1 + p2 + p3
+```
+
+> ## Challenge
+> 
+> Compare the three plots above
+>
+> - How are the data elements linked to the visual elements?
+> - What is the difference between the three?
+> - Do any of them tell a story more clearly?
+>
+> > ## Solution
+> > All figures have the same aesthetic mapping:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Day | x Axis
+> > Mean water use | y Axis
+> > Species | Colour
+> >
+> > But each of them uses a different geometry to represent this data. Bars, lines, and points from
+> > left to right.
+>{:.solution}
+{:.challenge}
+
+
+SCALES
 
 ## Another example
-```{r echo=FALSE, fig.width=15}
+```{r echo=FALSE,  out.width="100%", fig.height=4}
 p1 <- ggplot(diamonds, aes(carat, price)) +
   geom_point()
 p2 <- p1 +
@@ -211,7 +312,8 @@ p2 <- p1 +
     breaks = scales::trans_breaks("log10", function(x) 10^x),
    labels = scales::trans_format("log10", scales::math_format(10^.x))
   ) + annotation_logticks()
-grid.arrange(p1, p2, ncol = 2)
+
+p1 + p2
 ```
 
 > ## Challenge 

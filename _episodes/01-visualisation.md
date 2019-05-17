@@ -152,14 +152,24 @@ The big concept of the day is any plot can be constructed by mapping variables i
 visual properties (**aesthetics**) which are then applied to the physical marks (**geometries**) chosen
 to represent the data
 
+#### Process outline
 ![](../fig/grammar_simple.png)
 
 
-> ## Definitions
+> ## New terms
+> **Aesthetic:**
 > 
+> A visual property of the elements in a figure. Colour, size, and shape are all examples of 
+> aesthetics that affect the way your figure is displayed.
+>
+>
+> **Geometry:**
+>
+> The physical representation of your data. Points, lines, and bars are examples of geometries
+> that could be used to illustrate the data in a figure.
 {:.callout}
 
-This will probably be a very big change in how you think about figures, let's try it.
+This will probably be a very big change in how you think about figures, let's try it on a few examples.
 
 ## Straight to a classic
 [![minard](../fig/minard.png)](../fig/minard.png)
@@ -200,7 +210,7 @@ approach with a more recent figure.
 > 
 > List the data elements and visual aesthetics of the above figure. 
 > 
-> How they are linked together? What does this linking tell you about the figure? 
+> How they are linked together? Do you notice anything unusual about this linking? 
 > > ## Solution
 > > 
 > > **Data Variable** | **Visual Component**
@@ -215,10 +225,81 @@ approach with a more recent figure.
 > {: .solution}
 {: .challenge}
 
+Working on a single figure at a time doesn't give a good idea of how *changes* to the aesthetics or
+geometries can affect a figure. Changing either of these components can hide or reveal information, 
+and can sometimes completely change the story your figure is telling.
 
+Consider the following set:
+
+#### Changing aesthetics 
+<img src="../fig/rmd-01-changing_aesthetics-1.png" title="plot of chunk changing_aesthetics" alt="plot of chunk changing_aesthetics" width="100%" style="display: block; margin: auto;" />
+
+
+> ## Challenge
+> 
+> List the data elements, visual aesthetics, and geometries of the above figure to convince yourself
+> that the only changes are in the **mappings** of the data to aesthetics. 
+>
+> > ## Solution
+> > Left figure:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Weight | x Axis
+> > Fuel efficiency | y Axis
+> > No. of cylinders | Colour
+> >
+> > Middle Figure:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Weight | x Axis
+> > Fuel efficiency | y Axis
+> > No. of cylinders | Size
+> >
+> > Right figure:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Weight | x Axis
+> > No. of cylinders | y Asis
+> > Fuel efficiency | Colour
+> >
+> > Each of these figures uses a **point** geometry
+>{:.solution}
+{:.challenge}
+
+#### Changing geometries
+
+<img src="../fig/rmd-01-changing_geometries-1.png" title="plot of chunk changing_geometries" alt="plot of chunk changing_geometries" width="100%" style="display: block; margin: auto;" />
+
+> ## Challenge
+> 
+> Compare the three plots above
+>
+> - How are the data elements linked to the visual elements?
+> - What is the difference between the three?
+> - Do any of them tell a story more clearly?
+>
+> > ## Solution
+> > All figures have the same aesthetic mapping:
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Day | x Axis
+> > Mean water use | y Axis
+> > Species | Colour
+> >
+> > But each of them uses a different geometry to represent this data. Bars, lines, and points from
+> > left to right.
+>{:.solution}
+{:.challenge}
+
+
+SCALES
 
 ## Another example
-<img src="../fig/rmd-01-unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="1080" style="display: block; margin: auto;" />
+<img src="../fig/rmd-01-unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="100%" style="display: block; margin: auto;" />
 
 > ## Challenge 
 > 
