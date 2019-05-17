@@ -1,13 +1,12 @@
 ---
 title: Introduction to Visualisation
-teaching: 60
-exercises: 60
+teaching: 90
+exercises: 90
 questions:
 - "What are the basic building blocks of visualisation"
 objectives:
 - "To be able to identify the links between a data visualisation and the underlying data structure"
 - "To recognise the common visual features of a visualisation"
-- "To be able to restrict visual elements to only those that are necessary"
 keypoints:
 - "Visualisation is valuable"
 - "There are common elements that link data to visual properties"
@@ -26,10 +25,11 @@ library(agridat)
 library(grid)
 library(gridExtra)
 library(png)
+library(patchwork)
 data <- read_csv("../data/datasets.csv")
 data_12 <- data %>% 
   filter(dataset != 4)
-data <- data %>%
+data_dino <- data %>%
   filter(dataset == 4)
 comb2pngs <- function(imgs, bottom_text = NULL){
   img1 <-  grid::rasterGrob(as.raster(readPNG(imgs[1])),
@@ -42,29 +42,50 @@ comb2pngs <- function(imgs, bottom_text = NULL){
 
 ## Why visualisation?
 
-Let's meet a dataset:
+We have spent a lot of time learning about manipulating and exploring data. What sort of information
+can we learn like that?
+
+Let's meet some datasets:
 
 ```{r intro, echo=FALSE}
 data
 ```
 
-Let's get an idea of its structure:
+Get an idea of their overall structure:
 
 ```{r summary}
 summary(data)
 ```
 
-One little scatterplot:
+And some summary statistics for each dataset:
 
-```{r scatter, echo=FALSE}
-ggplot(data, aes(x, y)) +
+```{r summ_stats}
+data %>% 
+  group_by(dataset) %>% 
+  summarise(
+    mean_x = mean(x),
+    mean_y = mean(y),
+    sd_x = sd(x),
+    sd_y = sd(y),
+    correlation = cor(x,y)
+  )
+```
+
+> ## Challenge 1
+> What can we say about these datasets just from looking at their summaries?
+{:.challenge}
+
+Let's try plotting one of them to see if we can spot anything new:
+
+```{r dino_scatter, echo=FALSE, out.width="60%"}
+ggplot(data_dino, aes(x, y)) +
   geom_point() +
   theme(aspect.ratio = 1)
 ```
 
-Some more examples of why data visualisation is so valuable:
+And it immediately becomes apparent what all those numbers **mean**
 
-[The datasaur dozen](https://www.autodeskresearch.com/publications/samestats]. ) group of 12 two-dimensional datasets that have identical:
+The other data sets we looked at are known as [the datasaurus dozen](https://www.autodeskresearch.com/publications/samestats). A group of 12 two-dimensional datasets that have identical:
 
 * mean in both dimensions
 * sd in both dimensions
@@ -72,10 +93,11 @@ Some more examples of why data visualisation is so valuable:
 
 **But...**
 
-```{r scatter12, echo=FALSE}
+```{r scatter12, echo=FALSE, out.width="60%"}
 ggplot(data_12, aes(x, y)) +
   geom_point() +
-  facet_wrap(~dataset)
+  facet_wrap(~dataset) +
+  theme(aspect.ratio = 1)
 ```
 
 ## The roles of data visualisation 
@@ -84,8 +106,8 @@ In general there are two purposes behind data visualisations:
 
 * As a discovery tool, to explore a dataset
 * As a storytelling tool, to highlight features of a dataset
-In both cases, successful visualisation will 
-illuminate and aid understanding, 
+
+In both cases, a successful visualisation will illuminate and aid understanding, 
 not confuse or obscure.
 
 > ## Discussion - What is a data visualisation? 
@@ -95,33 +117,90 @@ not confuse or obscure.
 > <img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
 {: .discussion}
 
+## Talking about visualisations
+
+Our goal today will be to learn how to **describe** visualisations and their connections to data.
+We will build up a consistent vocabulary around visualisations that can be used to describe and create
+any visualisation you can imagine.
+
+The big concept of the day is any plot can be constructed by mapping variables in your **data** to 
+visual properties (**aesthetics**) which are then applied to the physical marks (**geometries**) chosen
+to represent the data
+
+#### Process outline
+![](../fig/grammar_simple.png)
+
+
+> ## New terms
+> **Aesthetic:**
+> 
+> A visual property of the elements in a figure. Colour, size, and shape are all examples of 
+> aesthetics that affect the way your figure is displayed.
+>
+>
+> **Geometry:**
+> The physical representation of your data. Points, lines, and bars are examples of geometries
+> that could be used to illustrate the data in a figure.
+{:.callout}
+
+This will probably be a very big change in how you think about figures, let's try it on a few examples.
 
 ## Straight to a classic
 [![minard](../fig/minard.png)](../fig/minard.png)
 
 > ## Challenge
 >
-> What are the data elements contributing to this plot?
+> List the data elements contributing to this plot?
 >
-> How are they each visually represented?
+> **Hint:** One way to answer this is to ask yourself what the column names in the underlying 
+> data frame might be.
+>
 > 
+> What are some of the visual properties (aesthetics) used to convey this information?
+>
+>
+> Which aesthetics are linked with which data variables?
 > > ## Solution
-> > Data Variable | Visual Component
-> > :-------------|:---------------
+> > The major variable/aethetic mappings are:
+> > 
+> > **Data Variable** | **Visual Component**
 > > Longitude | x Axis
 > > Latitude | y Axis
 > > Number of troops | Line width
 > > Direction of travel | Line colour
 > > Temperature | y Axis (bottom chart)
 > > Date | Text 
+> >
 >{: .solution}
 {: .challenge}
+
+Part of the reason this is a classic example of data visualisation is because of how information 
+dense the image is and how clearly it conveys different elements of the data. Let's try the same 
+approach with a more recent figure.
+
 > ## A modern example?
 > 
-> ![](../fig/mayer2017.PNG)
+> ![](../fig/mayer2017.PNG){:class="fig-responsive" style="max-width:60%"}
 > 
-> How are the data elements linked to visual elements?
-{: .callout}
+> List the data elements and visual aesthetics of the above figure. 
+> 
+> How they are linked together? What does this linking tell you about the figure? 
+> > ## Solution
+> > 
+> > **Data Variable** | **Visual Component**
+> > :---------|:-----------
+> > No. landraces (l) | x Axis
+> > No. gametes per landrace (g) | y Axis
+> > r^2 decay distance | z Axis
+> > r^2 decay distance | Bar colour
+> >
+> > This figure has a **redundant** mapping with the same data variable being mapped to 
+> > multiple aesthetics. Are both of them necessary for the purpose of the figure?
+> {: .solution}
+{: .challenge}
+
+
+
 ## Another example
 ```{r echo=FALSE, fig.width=15}
 p1 <- ggplot(diamonds, aes(carat, price)) +
