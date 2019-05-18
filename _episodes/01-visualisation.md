@@ -125,6 +125,13 @@ The other data sets we looked at are known as [the datasaurus dozen](https://www
 
 <img src="../fig/rmd-01-scatter12-1.png" title="plot of chunk scatter12" alt="plot of chunk scatter12" width="60%" style="display: block; margin: auto;" />
 
+> ## Discussion - What is a data visualisation? 
+> 
+> What is the difference between panel E and the other panels in the following figure?
+> 
+> !["Plot vs diagram"](../fig/diagram_plot.PNG){:class="fig-responsive" style="max-width:60%"}
+{: .discussion}
+
 ## The roles of data visualisation 
 
 In general there are two purposes behind data visualisations:
@@ -135,18 +142,23 @@ In general there are two purposes behind data visualisations:
 In both cases, a successful visualisation will illuminate and aid understanding, 
 not confuse or obscure.
 
-> ## Discussion - What is a data visualisation? 
+> ## Discussion - What makes an effective data visualisation?
+>
+> In 2015, the [Wall Street Journal published](http://graphics.wsj.com/infectious-diseases-and-vaccines/)
+> a series of data visualisations around disease incidence and vaccination in the USA. The graphic 
+> for measles is shown below:
+>
+> !["Measles incidence and vaccination"](../fig/wsj_measles.png){:class="fig-responsive" style="max-width:70%"}
 > 
-> What is the difference between panel E and the other panels in the following figure?
-> 
-> <img src="../fig/diagram_plot.PNG" alt="Plot vs diagram" style="width: 600px;"/>
+> How effective is this visualisation at conveying the story of the dataset, and what features do 
+> you feel contribute to that success?
 {: .discussion}
 
 ## Talking about visualisations
 
 Our goal today will be to learn how to **describe** visualisations and their connections to data.
 We will build up a consistent vocabulary around visualisations that can be used to describe and create
-any visualisation you can imagine.
+complex visualisations out of a series of simple tools.
 
 The big concept of the day is any plot can be constructed by mapping variables in your **data** to 
 visual properties (**aesthetics**) which are then applied to the physical marks (**geometries**) chosen
@@ -296,23 +308,123 @@ Consider the following set:
 {:.challenge}
 
 
-SCALES
+While the links between data, aesthetics, and geometries describe the core features of a visualisation,
+there are several other components that influence the final figure.
 
-## Another example
-<img src="../fig/rmd-01-unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="100%" style="display: block; margin: auto;" />
+Consider the following pair of plots:
+
+<img src="../fig/rmd-01-scales_intro-1.png" title="plot of chunk scales_intro" alt="plot of chunk scales_intro" width="100%" style="display: block; margin: auto;" />
 
 > ## Challenge 
 > 
 > Compare the two plots above
 > - How are the data elements linked to the visual elements?
-> - What is the difference between the two?
-{: .callout}
-<img src="../fig/rmd-01-unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="1080" style="display: block; margin: auto;" />
+> - What term would you use to describe the difference between the two?
+>
+> > ## Solution
+> > Each plot has exactly the same data, aesthetic mapping, and geometries.
+> > The only difference is that the x and y axis in the right hand figure is **scaled** logarithmically.
+> {:.solution}
+{: .challenge}
+
+So this new concept extends our previous understanding of the visualisation process by affecting exactly
+how values of your data are assigned to values of the visual property.
+
+![](../fig/grammar_scales.png)
+
+> ## New term
+> **Scale:**
+> 
+> Controls *how* data values get converted into their aesthetic values. For example, the scale of a
+> colour aesthetic determines what colours the data points are assigned to.
+{:.callout}
+
+To demonstrate that scaling is affecting the mapping of data to aesthetics, consider the following 
+example:
+
+<img src="../fig/rmd-01-scales_v_data-1.png" title="plot of chunk scales_v_data" alt="plot of chunk scales_v_data" width="100%" style="display: block; margin: auto;" />
+
+In one of these, the *data* is transformed before plotting. In the other, the data values are left 
+unchanged and just the *scaling* as to how those data points are mapped to the x and y axis is altered.
+
+Do you find each option easier or harder to interpret?
+
+Scales apply to all visual properties, with colour being the easiest to observe differences:
+
+<img src="../fig/rmd-01-colour_scale-1.png" title="plot of chunk colour_scale" alt="plot of chunk colour_scale" width="100%" style="display: block; margin: auto;" />
+
+In this example, the cylinder variable is mapped to three different colour scales. One continuous 
+(**A**) in which the values of cylinder are mapped to a spectrum of dark to light blue. The other 
+two are categorical (**B**, **C**) in which the unique values of cylinder are mapped to individual 
+colour values. The specific colour values are determined by the scale and are different between the 
+two plots.
+
+The choice of scale for your visualisations will depend on your data. Are they continuous or 
+categorical? Can they be mapped directly onto an appropriate scale, or would a transformed scale
+better represent the data?
+
+
+## Coordinates
+
+As with scales controlling the conceptual mapping of data to a visual property, coordinates control 
+the physical mapping of geometries to positions on a screen/page.
+
+![](../fig/grammar_coord.png)
+
+> ## New term
+> **Coordinate system:**
+> 
+> Controls how the points, lines, bars etc. of a visualisation get placed in physical space. 
+{:.callout}
+
+The coordinate system you are most familiar with is the Cartesian coordinate system. This is the x/y
+two dimensional plane that has been used in the examples so far. 
+
+A simple modification we could make to this system is to enforce a condition on the coordinates that
+our two dimensions have to be equal. In other words, a unit of length along the x axis is the same 
+physical distance as a unit of length along the y axis:
+
+<img src="../fig/rmd-01-coord_fixed-1.png" title="plot of chunk coord_fixed" alt="plot of chunk coord_fixed" width="100%" style="display: block; margin: auto;" />
+
+In this example, you can see that on the right hand figure, the distance between -50 and 0 on the x axis
+is exactly the sasme distance as between -50 and 0 on the y axis.
+
+> ## Discussion
+> Why might you choose to enforce this restriction on the coordinate system?
+{: .discussion}
+
+While this might seem like a small change, changing the coordinate system can have a drastic effect
+on the presentation of your data and how it is interpreted.
+
+<img src="../fig/rmd-01-coord_more-1.png" title="plot of chunk coord_more" alt="plot of chunk coord_more" width="100%" style="display: block; margin: auto;" />
+
+> ## Discussion
+> The two plots above show exactly the same data as the grid previously. Do the changed coordinates
+> change how you might interpret the data?
+{: .discussion}
+
+## Applying your visualisation vocabulary
+
+By now you have developed a vocabulary that will let you talk consistently about figures. Time to try
+it out on something you are familiar with.
 
 > ## Challenge
+> Select a figure you have produced. Describe the **data** they contain, how that data is mapped
+> to the visual **aesthetics** and what **geometries** were chosen to represent the data. Did you have
+> to consider the **scale** or **coordinate system** for your figure to get your deired point across?
+>
+> Find a partner and share your figure and description. Do your figures share any common features?
+{: .challenge}
+
+This process allows you to decsribe a figure even if you are not familiar with how to create it.
+
+> ## Challenge - Advanced
+> Consider the following visualisation from The Guardian showing the [change in voting patterns at
+> the 2018 US elections](https://www.theguardian.com/us-news/ng-interactive/2018/nov/07/blue-wave-or-blue-ripple-a-visual-guide-to-the-democrats-gains):
+> <iframe height="600" src="https://interactive.guim.co.uk/uploader/embed/2018/11/swing-zip/giv-3902uF0MQNdI60jh/" style="width: 100%; border: 1px;"></iframe>
+>
+> How would you describe this visualisation?
 > 
-> Compare the two plots above
-> How are the data elements linked to the visual elements?
-> What is the difference between the two?
-> Do either of them tell a story more clearly?
-{: .callout}
+> **Hint:** You will need to create a new type of geometry to describe this. What will you call it
+> and what aesthetics will it use?
+{: .challenge}
