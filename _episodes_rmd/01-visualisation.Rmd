@@ -1,7 +1,7 @@
 ---
 title: Introduction to Visualisation
-teaching: 90
-exercises: 90
+teaching: 120
+exercises: 120
 questions:
 - "What are the basic building blocks of visualisation"
 objectives:
@@ -25,6 +25,7 @@ library(agridat)
 library(grid)
 library(gridExtra)
 library(png)
+library(ggthemes)
 library(patchwork)
 data <- read_csv("../data/datasets.csv")
 data_12 <- data %>% 
@@ -197,7 +198,7 @@ approach with a more recent figure.
 > 
 > List the data elements and visual aesthetics of the above figure. 
 > 
-> How they are linked together? Do you notice anything unusual about this linking? 
+> How they are linked together?
 > > ## Solution
 > > 
 > > **Data Variable** | **Visual Component**
@@ -207,8 +208,6 @@ approach with a more recent figure.
 > > r^2 decay distance | z Axis
 > > r^2 decay distance | Bar colour
 > >
-> > This figure has a **redundant** mapping with the same data variable being mapped to 
-> > multiple aesthetics. Are both of them necessary for the purpose of the figure?
 > {: .solution}
 {: .challenge}
 
@@ -458,9 +457,11 @@ By now you have developed a vocabulary that will let you talk consistently about
 it out on something you are familiar with.
 
 > ## Challenge
-> Select a figure you have produced. Describe the **data** they contain, how that data is mapped
-> to the visual **aesthetics** and what **geometries** were chosen to represent the data. Did you have
-> to consider the **scale** or **coordinate system** for your figure to get your deired point across?
+> Select a figure you have produced, or one that you have seen and thought was very effective. 
+>
+> Describe the **data** they contain, how that data is mapped to the visual **aesthetics** and what
+> **geometries** were chosen to represent the data. Did you have to consider the **scale** or
+> **coordinate system** for the figure to get your deired point across?
 >
 > Find a partner and share your figure and description. Do your figures share any common features?
 {: .challenge}
@@ -474,7 +475,38 @@ This process allows you to decsribe a figure even if you are not familiar with h
 >
 > How would you describe this visualisation?
 > 
-> **Hint:** You will need to create a new type of geometry to describe this. What will you call it
-> and what aesthetics will it use?
+> **Hint:** You will need to create a new type of geometry that we haven't discussed to describe 
+> this. What might you call it and what aesthetics will it use?
 {: .challenge}
 
+## That special something
+Until now, everything we have discussed has had some *functional* role in creating a figure. We have 
+been talking about how to display our data with a visual representation that allows us to understand
+the features of our data. There are a lot of other aspects to a plot that can affect the final look 
+however.
+
+> ## Challenge
+> What changes between the following plots? What term would *you* use to describe these features?
+> 
+> ```{r themes, echo = FALSE, out.width="70%", fig.height=6}
+> p1 <- ggplot(mtcars, aes(x = wt, y = mpg, colour = factor(cyl))) + geom_point() + labs(title = "Example plot") + theme(legend.position = "none")
+> 
+> p2 <- p1 + theme_wsj() + scale_colour_wsj() + theme(legend.position = "none")
+> p3 <- p1 + theme_fivethirtyeight() + scale_colour_fivethirtyeight() + theme(legend.position = "none")
+> p4 <- p1 + theme_economist() + scale_colour_economist() + theme(legend.position = "none")
+> 
+> p1 + p2 + p3 + p4 + plot_layout(nrow=2)
+> ```
+{:.challenge}
+
+These aspects to not change the data elements of a figure, but do have an impact on how the plot looks.
+We will refer to these as the **theme** of a visualisation.
+
+![](../fig/grammar_coord.png)
+
+> ## New term
+> **Theme:**
+> 
+> Any non-data element of a visualisation. Changing these can still have a dramatic effect on the 
+> final presentation of the figure.. 
+{:.callout}
