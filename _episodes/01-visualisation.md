@@ -444,7 +444,7 @@ however.
 These aspects to not change the data elements of a figure, but do have an impact on how the plot looks.
 We will refer to these as the **theme** of a visualisation.
 
-![](../fig/grammar_coord.png)
+![](../fig/grammar_theme.png)
 
 > ## New term
 > **Theme:**
