@@ -41,15 +41,50 @@ expressed from the same set of components: a **data** set, a
 **coordinate system**, and a set of **geoms**--the visual representation of data
 points.
 
-This is exactly the idea that we were exploring in the first part of the day.
+This is exactly the model that we were exploring earlier.
 
-The key to understanding ggplot2 is thinking about a figure in layers.
+![](../fig/grammar_theme.png)
+
+Beyond these ideas discussed yesterday, the key to understanding ggplot2 is thinking about a figure in layers.
 This idea may be familiar to you if you have used image editing programs like Photoshop, Illustrator, or
-Inkscape.
+Inkscape. 
 
+Before we begin learning how to implement these steps in code however, let's refresh our memory on
+the process of describing a figure.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Z8t4k0Q8e8Y" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+> ## Challenge 1
+> Watch the video above from the BBC in which Hans Rosling walks us through a data visualisation.
+> Since we haven't discussed anything about animation yet, let's just focus on a single frame.
+>
+> ![](../fig/rosling_still.png)
+> 
+> - What are the data variables being displayed in this plot?
+> - What aesthetics are they mapped to?
+> - What geometries are they represented with?
+> - What are the scales and coordinate system used?
+>
+> > ## Solution
+> >
+> > **Data Variable** | **Aesthetic**
+> > :---------|:-----------
+> > Income per person | x Axis
+> > Life expectancy | y Axis
+> > World region | Colour
+> > Population | Size
+> >
+> > The data is shown using points, with a linear scale for life expectancy, a logarithmic scale for
+> > income per person, and a categorical scale for world region. The standard coordinate system for
+> > this sort of figure is the Cartesian coordinate system.
+>{:.solution}
+{:.challenge}
+
+
+If this data seems familiar to you, it's because you have already spent a great deal of time with it.
 Before making some plots, let's get our brains back into R mode:
 
-> ## Challenge
+> ## Challenge 2
 >
 > Make a new project for this lesson and initialise a git repository.
 >
@@ -60,202 +95,327 @@ Before making some plots, let's get our brains back into R mode:
 > Open a new script and use `read_csv` to read in the gapminder data and assign it to a variable called `gapminder`.
 > (Hint: `read_csv` can be accessed through the `tidyverse` package).
 >
+> Because our example figure uses only the data from 1977, create a new data frame called `gapminder_1977` 
+> and assign it the data just from 1977 using the `filter()` function.
+>
 > Commit the script to the repository
 {: .challenge}
 
 
 ~~~
 library(tidyverse)
+
 gapminder <- read_csv("../data/gapminder_data.csv")
+gapminder_1977 <- filter(gapminder, year == 1977)
 ~~~
 {: .language-r}
 
-We'll work with the gapminder dataset to make several plots to explore the data and tell a story.
+We'll work with the gapminder dataset throughout the day to make several plots to explore the data 
+and learn how to construct a plot. Without getting too concerned about the details of specific commands
+for now, let's see an example of how to turn our description of the gapminder plot into code.
 
-So first an example:
+
+## ggplot
+
+The first important function to learn is `ggplot()`. This function lets R know that we're creating a
+new plot. Any visualisation process starts with the data you are displaying, so we will provide
+the gapminder data as the `data` argument of the function.
 
 
 ~~~
-library("ggplot2")
-ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
+ggplot(data = gapminder_1977)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-ggplot_blank-1.png" title="plot of chunk ggplot_blank" alt="plot of chunk ggplot_blank" width="612" style="display: block; margin: auto;" />
+
+Obviously nothing interesting is shown yet, because we have not told R what to *do* with the data yet.
+
+The next step in our process is mapping our data variables to particular aesthetics in the final plot.
+For this, we will use the `mapping` argument to `ggplot()`. For this argument, we will use the `aes()`
+function, in which we link an aesthetic name with a variable in our data (using the column name in 
+the data frame).
+
+
+~~~
+ggplot(
+  data = gapminder_1977, 
+  mapping = aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)
+)
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-ggplot_axes-1.png" title="plot of chunk ggplot_axes" alt="plot of chunk ggplot_axes" width="612" style="display: block; margin: auto;" />
+
+In this `aes()` function, we are telling `ggplot` that it should map the data in the `gdpPercap` column
+to the position on the x axis, the data in the `lifeExp` column to the position on the y axis, the data 
+in the `continent` column to the colour of plot elements, and the data in the `pop` column to the 
+size of the plot elements. 
+
+> ## Challenge 3
+> What has changed in this plot and why?
+>
+> > ## Solution
+> > We now have some axes, but not much else. Because we have provided some aesthetics to work with,
+> > `ggplot()` fits some default scales, coordinates and themes to our data. This effectively sets 
+> > up a plotting environment for us to work with.
+>{:.solution}
+{:.challenge}
+
+To get something a bit more interesting happening, we need to provide a geometry to which these 
+aesthetics can be applied. In this case, we want a point geometry, which can be added to the plot
+using the `geom_point()` function. Notice in the code below that we are *adding* the geom to
+the base plot above. This shows the layered nature of building a plot. We will continue adding 
+additional layers later that will add to how the plot is displayed.
+
+
+~~~
+ggplot(
+  data = gapminder_1977, 
+  mapping = aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)
+) +
   geom_point()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-lifeExp-vs-gdpPercap-scatter-1.png" title="plot of chunk lifeExp-vs-gdpPercap-scatter" alt="plot of chunk lifeExp-vs-gdpPercap-scatter" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-ggplot_points-1.png" title="plot of chunk ggplot_points" alt="plot of chunk ggplot_points" width="612" style="display: block; margin: auto;" />
 
-So the first thing we do is call the `ggplot` function. This function lets R
-know that we're creating a new plot, and any of the arguments we give the
-`ggplot` function are the *global* options for the plot: they apply to all
-layers on the plot.
+Now we are getting somewhere. This is the first thing we have produced that might actually be called
+a 'plot'. This basic structure: 
 
-We've passed in two arguments to `ggplot`. First, we tell `ggplot` what data we
-want to show on our figure, in this example the gapminder data we read in
-earlier. For the second argument we passed in the `aes` function, which
-tells `ggplot` how variables in the **data** map to *aesthetic* properties of
-the figure, in this case the **x** and **y** locations. Here we told `ggplot` we
-want to plot the "gdpPercap" column of the gapminder data frame on the x-axis, and
-the "lifeExp" column on the y-axis. 
+~~~~~~
+ggplot(<DATA>, <AESTHETIC MAPPING>) + <GEOMETRY FUNCTION>
+~~~~~~
 
-By itself, the call to `ggplot` isn't enough to draw a figure:
+is all you need to get started.
 
+> ## Discussion
+> What is still missing from the figure and not provided by the default settings?
+{:.discussion}
 
-~~~
-ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="612" style="display: block; margin: auto;" />
-
-We need to tell `ggplot` how we want to visually represent the data, which we
-do by adding a new **geom** layer. In our example, we used `geom_point`, which
-tells `ggplot` we want to visually represent the relationship between **x** and
-**y** as a scatterplot of points:
-
+The final step in creating something that looks closer to our example image is to add a logarithmic
+scale to the x axis. Like adding the point geometry layer, we will add a scale to the plot using the `+`.
 
 ~~~
-ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) +
-  geom_point()
+ggplot(
+  data = gapminder_1977, 
+  mapping = aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)
+) +
+  geom_point() +
+  scale_x_log10()
 ~~~
 {: .language-r}
 
-<img src="../fig/rmd-03-lifeExp-vs-gdpPercap-scatter2-1.png" title="plot of chunk lifeExp-vs-gdpPercap-scatter2" alt="plot of chunk lifeExp-vs-gdpPercap-scatter2" width="612" style="display: block; margin: auto;" />
+<img src="../fig/rmd-03-ggplot_scale-1.png" title="plot of chunk ggplot_scale" alt="plot of chunk ggplot_scale" width="612" style="display: block; margin: auto;" />
 
-> ## Challenge 1
->
-> Modify the example so that the figure shows how life expectancy has
-> changed over time:
->
+And so we have created something pretty close to the image from the video with a few short lines of
+code that describe the process of building the plot. We provided some **data**, and mapped the data
+values onto **aesthetic** properties (using a log **scale** to adjust this mapping for one variable),
+then applied these aesthetics to a point **geometry** to produce a scatter plot.
+
+Once you are comfortable with the core concept, creating any plot you want is a matter of working 
+through the same process. 
+
+> ## Challenge 4
+> There are six variables in the `gapminder_1977` data frame, `country`, `year`, `pop`, `continent`,
+> `lifeExp`, and `gdpPercap`. Although as `year` contains just the value `1977` it is not that informative.
 > 
-> ~~~
-> ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) + geom_point()
-> ~~~
-> {: .language-r}
+> Using the template:
+> ~~~~
+> ggplot(gapminder_1977, aes(x = <VAR1>, y = <VAR2>, colour = <VAR3>)) + geom_point()
+> ~~~~
+> {:.language-r}
+> experiment with substituting different combinations of the data variables into the three positions.
+> 
+> How do the default parameters treat the different variables?
+{:.challenge}
+
+## Digging Deeper
+
+### Aesthetics
+
+To start looking a little more closely into the details of how this all works, we will begin with 
+the aesthetic mappings. In our example, this mapping was defined in the `ggplot()` call. In this situation,
+the mapping is a **global** one -- it will be applied to every geom added to the figure.
+
+The mappings are also able to be defined in each geom function. In this case, the mapping is specific
+to that geom and is not applied to other elements of the figure.
+
+With only a single geom in the figure, these two forms will produce identical plots:
+~~~~~~
+ggplot(
+  data = gapminder_1977, 
+  mapping = aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)
+) +
+  geom_point()
+
+#######
+  
+ggplot(
+  data = gapminder_1977
+) +
+  geom_point( mapping = aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop) )
+~~~~~~
+{:.language-r}
+
+This will be useful as we start adding multiple geoms and want to change the aesthetic mappings for 
+each layer. Or in situations where we may be using multiple geoms that don't all understand the same
+aesthetics.
+
+> ## Challenge 5
+> The aesthetics that can be mapped to a geom can be found in it's help file under the heading **Aesthetics**.
+> Review the help file for the `geom_point()` we have been using and list the aesthetics it can understand. What do you think they do?
+> > ## Solution
+> > - x
+> > - y
+> > - alpha
+> > - colour
+> > - fill
+> > - group
+> > - shape
+> > - size
+> > - stroke
+> {:.solution}
+{:.challenge}
+
+#### Mapping vs Setting
+When *mapping* aesthetics (inside an `aes()` function), the value the aesthetic takes is determined 
+by the data. We can instead *set* the value of an aesthetic directly by assigning it outside of the
+`aes()` function.
+
+
+~~~
+ggplot(gapminder_1977, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point(colour = "blue", size = 5) 
+~~~
+{: .language-r}
+
+<img src="../fig/rmd-03-ggplot_setting_aes-1.png" title="plot of chunk ggplot_setting_aes" alt="plot of chunk ggplot_setting_aes" width="612" style="display: block; margin: auto;" />
+
+> ## Challenge 6
+> Using the code from our example gapminder plot:
+> ~~~~~
+>  ggplot(
+>  data = gapminder_1977, 
+>  mapping = aes(x = gdpPercap, y = lifeExp, colour = continent, size = pop)
+>) +
+>  geom_point() +
+>  scale_x_log10()
+> ~~~~~
+> {:.language-r}
+> try *setting* some aesthetics in the `geom_point()` function (See solution to Challenge 5 for a 
+> list of possible aesthetics). What happens if you set an aesthetic that has already been mapped 
+> to a data variable?
+> > ## Solution
+> > *Setting* an aesthetic overrides the *mapping*.
+> {:.solution}
+{:.challenge}
+
+### Layers
+We've talked about these steps as adding layers to a plot, but so far we haven't really taken advantage
+of that. By adding multiple geoms we can build up to creating quite complex figures. To demonstrate 
+this, we are going to go back to working with the complete `gapminder` data frame.
+
+> ## Challenge 7
 >
-> Hint: the gapminder dataset has a column called "year", which should appear
+> Create a scatterplot using `gapminder` that shows how life expectancy has changed over time:
+>
+> **Hint:** the gapminder dataset has a column called "year", which should appear
 > on the x-axis.
 >
-> > ## Solution to challenge 1
-> >
-> > Here is one possible solution:
+> > ## Solution
 > >
 > > 
 > > ~~~
-> > ggplot(data = gapminder, aes(x = year, y = lifeExp)) + geom_point()
+> > ggplot(data = gapminder, mapping = aes(x = year, y = lifeExp)) + geom_point()
 > > ~~~
 > > {: .language-r}
 > > 
-> > <img src="../fig/rmd-03-ch1-sol-1.png" title="plot of chunk ch1-sol" alt="plot of chunk ch1-sol" width="612" style="display: block; margin: auto;" />
+> > <img src="../fig/rmd-03-ch7-sol-1.png" title="plot of chunk ch7-sol" alt="plot of chunk ch7-sol" width="612" style="display: block; margin: auto;" />
 > >
 > {: .solution}
 {: .challenge}
 
->
-> ## Challenge 2
->
-> In the previous examples and challenge we've used the `aes` function to tell
-> the scatterplot **geom** about the **x** and **y** locations of each point.
-> Another *aesthetic* property we can modify is the point *color*. Modify the
-> code from the previous challenge to **color** the points by the "continent"
-> column. What trends do you see in the data? Are they what you expected?
->
-> > ## Solution to challenge 2
-> >
-> > In the previous examples and challenge we've used the `aes` function to tell
-> > the scatterplot **geom** about the **x** and **y** locations of each point.
-> > Another *aesthetic* property we can modify is the point *color*. Modify the
-> > code from the previous challenge to **color** the points by the "continent"
-> > column. What trends do you see in the data? Are they what you expected?
-> >
-> > 
-> > ~~~
-> > ggplot(data = gapminder, aes(x = year, y = lifeExp, color=continent)) +
-> >   geom_point()
-> > ~~~
-> > {: .language-r}
-> > 
-> > <img src="../fig/rmd-03-ch2-sol-1.png" title="plot of chunk ch2-sol" alt="plot of chunk ch2-sol" width="612" style="display: block; margin: auto;" />
-> >
-> {: .solution}
-{: .challenge}
-
-
-## Layers
-
-Using a scatterplot probably isn't the best for visualizing change over time.
+Using a scatterplot probably isn't the best for visualizing change over time however.
 Instead, let's tell `ggplot` to visualize the data as a line plot:
 
 
 ~~~
-ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country, color=continent)) +
+ggplot(data = gapminder, aes(x = year, y = lifeExp, group = country, color = continent)) +
   geom_line()
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-03-lifeExp-line-1.png" title="plot of chunk lifeExp-line" alt="plot of chunk lifeExp-line" width="612" style="display: block; margin: auto;" />
 
-Instead of adding a `geom_point` layer, we've added a `geom_line` layer. We've
-added the **by** *aesthetic*, which tells `ggplot` to draw a line for each
-country.
+Instead of adding a `geom_point` layer, we've added a `geom_line` layer. We've also
+added the **group** *aesthetic*, which tells `ggplot` that each country should get it's own line.
 
 But what if we want to visualize both lines and points on the plot? We can
 simply add another layer to the plot:
 
 
 ~~~
-ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country, color=continent)) +
-  geom_line() + geom_point()
+ggplot(data = gapminder, aes(x = year, y = lifeExp, group = country, color = continent)) +
+  geom_line() + 
+  geom_point()
 ~~~
 {: .language-r}
 
 <img src="../fig/rmd-03-lifeExp-line-point-1.png" title="plot of chunk lifeExp-line-point" alt="plot of chunk lifeExp-line-point" width="612" style="display: block; margin: auto;" />
 
-It's important to note that each layer is drawn on top of the previous layer. In
-this example, the points have been drawn *on top of* the lines. Here's a
-demonstration:
+It's important to note that each layer is drawn on top of the previous layer. So in this example, the
+lines are drawn first, and then the points are drawn *on top of* the lines. 
 
-
-~~~
-ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country)) +
-  geom_line(aes(color=continent)) + geom_point()
-~~~
-{: .language-r}
-
-<img src="../fig/rmd-03-lifeExp-layer-example-1-1.png" title="plot of chunk lifeExp-layer-example-1" alt="plot of chunk lifeExp-layer-example-1" width="612" style="display: block; margin: auto;" />
-
-In this example, the *aesthetic* mapping of **color** has been moved from the
-global plot options in `ggplot` to the `geom_line` layer so it no longer applies
-to the points. Now we can clearly see that the points are drawn on top of the
-lines.
-
-> ## Tip: Setting an aesthetic to a value instead of a mapping
->
-> So far, we've seen how to use an aesthetic (such as **color**) as a *mapping* to a variable in the data. For example, when we use `geom_line(aes(color=continent))`, ggplot will give a different color to each continent. But what if we want to change the colour of all lines to blue? You may think that `geom_line(aes(color="blue"))` should work, but it doesn't. Since we don't want to create a mapping to a specific variable, we simply move the color specification outside of the `aes()` function, like this: `geom_line(color="blue")`.
-{: .callout}
-
-> ## Challenge 3
->
-> Switch the order of the point and line layers from the previous example. What
-> happened?
->
-> > ## Solution to challenge 3
-> >
-> > Switch the order of the point and line layers from the previous example. What
-> > happened?
-> >
+> ## Challenge 8
+> Modify the code from the example above so that only the lines are coloured by continent and the points
+> remain black.
+> 
+> Then switch the order of the `geom_line()` and `geom_point()` layers. What do you notice?
+> > ## Solution
+> > This could be done either by moving the mapping of colour to continent to be within the `geom_line()`
+> > function:
 > > 
 > > ~~~
-> > ggplot(data = gapminder, aes(x=year, y=lifeExp, by=country)) +
-> >  geom_point() + geom_line(aes(color=continent))
+> > ggplot(data = gapminder, aes(x = year, y = lifeExp, group = country)) +
+> >   geom_line(mapping = aes(colour = continent)) + 
+> >   geom_point()
 > > ~~~
 > > {: .language-r}
 > > 
-> > <img src="../fig/rmd-03-ch3-sol-1.png" title="plot of chunk ch3-sol" alt="plot of chunk ch3-sol" width="612" style="display: block; margin: auto;" />
+> > <img src="../fig/rmd-03-unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="612" style="display: block; margin: auto;" />
+> > or by setting the points to be black:
+> > 
+> > ~~~
+> > ggplot(data = gapminder, aes(x = year, y = lifeExp, group = country, colour = continent)) +
+> >   geom_line() + 
+> >   geom_point(colour = "black")
+> > ~~~
+> > {: .language-r}
+> > 
+> > <img src="../fig/rmd-03-unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="612" style="display: block; margin: auto;" />
 > >
-> > The lines now get drawn over the points!
-> >
-> {: .solution}
-{: .challenge}
+> > Swapping their order changes the order they are drawn on the plot so that now the points are 
+> > *under* the lines.
+> > 
+> > ~~~
+> > ggplot(data = gapminder, aes(x = year, y = lifeExp, group = country, colour = continent)) +
+> >   geom_point(colour = "black") +
+> >   geom_line()
+> > ~~~
+> > {: .language-r}
+> > 
+> > <img src="../fig/rmd-03-unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="612" style="display: block; margin: auto;" />
+> {:.solution}
+{:.challenge}
+
+#### Other geoms?
+There are a wide array of geoms that you can add to your plots beyond the points and lines we have
+shown so far. The [`ggplot2` cheatsheet](https://www.rstudio.com/resources/cheatsheets/#ggplot2) 
+provides examples of different geoms available, as well as descriptions of the characteristics of 
+the data that is appropriate for each.
+
+************
 
 ## Transformations and statistics
 
