@@ -571,7 +571,7 @@ ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
 {: .challenge}
 
 
-## Multi-panel figures
+## Separating figures
 
 Earlier we visualised the change in life expectancy over time across all
 countries in one plot. Alternatively, we can split this out over multiple panels

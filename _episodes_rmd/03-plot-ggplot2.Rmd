@@ -494,7 +494,7 @@ ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
 {: .challenge}
 
 
-## Multi-panel figures
+## Separating figures
 
 Earlier we visualised the change in life expectancy over time across all
 countries in one plot. Alternatively, we can split this out over multiple panels
@@ -508,7 +508,7 @@ countries with names that start with the letter "A".
 {: .callout}
 
 
-```{r facet}
+```{r facet, fig.height=5}
 a_countries <- filter(gapminder, str_starts(country, "A"))
 
 ggplot(data = a_countries, aes(x = year, y = lifeExp, color = continent)) +
