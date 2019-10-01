@@ -144,11 +144,9 @@ not confuse or obscure.
 
 > ## Discussion - What makes an effective data visualisation?
 >
-> In 2015, the [Wall Street Journal published](http://graphics.wsj.com/infectious-diseases-and-vaccines/)
-> a series of data visualisations around disease incidence and vaccination in the USA. The graphic 
-> for measles is shown below:
->
-> !["Measles incidence and vaccination"](../fig/wsj_measles.png){:class="fig-responsive" style="max-width:70%"}
+> The figure below is from an [Axios article](https://www.axios.com/the-state-of-the-space-race-in-1-chart-1516917901-0bf90c42-25c6-4c98-a29f-d000e43e342a.html)
+> about satellite launches.
+> !["State of the space race"](../fig/space-race.jpg){:class="fig-responsive" style="max-width:70%"}
 > 
 > How effective is this visualisation at conveying the story of the dataset, and what features do 
 > you feel contribute to that success?
@@ -328,6 +326,24 @@ Consider the following pair of plots:
 So this new concept extends our previous understanding of the visualisation process by affecting exactly
 how values of your data are assigned to values of the visual property.
 
+> ## Challenge
+> 
+> Which of the following are aesthetics?
+>
+> 1. Colour, size, shape
+> 2. X and Y axis
+> 3. Colour, size, shape, geometry
+> 4. Both (1) and (2)
+>
+>> ## Solution
+>> The correct answer is 4. From a 'grammer of graphics' framework, the X and Y axes are visual 
+>> elements just like colour, size, and shape. Geometry (e.g. lines, bars, points) is not - 
+>> it affects how your aesthetic mappings are displayed, not what the aesthetics themselves are. 
+> {: .solution}
+{: .challenge}
+ 
+## Scale 
+
 ![](../fig/grammar_scales.png)
 
 > ## New term
@@ -393,6 +409,12 @@ is exactly the sasme distance as between -50 and 0 on the y axis.
 
 While this might seem like a small change, changing the coordinate system can have a drastic effect
 on the presentation of your data and how it is interpreted.
+
+
+~~~
+Error in loadNamespace(name): there is no package called 'mapproj'
+~~~
+{: .error}
 
 <img src="../fig/rmd-01-coord_more-1.png" title="plot of chunk coord_more" alt="plot of chunk coord_more" width="100%" style="display: block; margin: auto;" />
 

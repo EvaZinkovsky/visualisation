@@ -27,6 +27,7 @@ library(gridExtra)
 library(png)
 library(ggthemes)
 library(patchwork)
+
 data <- read_csv("../data/datasets.csv")
 data_12 <- data %>% 
   filter(dataset != 4)
