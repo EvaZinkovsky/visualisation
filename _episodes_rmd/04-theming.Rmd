@@ -12,7 +12,7 @@ objectives:
 keypoints:
 - "Make sure your plots have useful titles, labels and legends"
 - "Use `theme()` to modify how your plot looks"
-- "The `patchwork` package lets you create a multi-plot figure"
+- "The `cowplot` package lets you create a multi-plot figure"
 - "Use `ggsave()` to save a plot to a file"
 source: Rmd
 ---
@@ -196,50 +196,54 @@ There are two nice things about `ggsave`. First, it defaults to the last plot, s
 ## Multi-panel figures
 
 Sometimes, one plot cannot tell the whole story and you need to combine multiple plots into a single
-figure. There are several ways you can perform this, but today we will be using the `patchwork` [package](https://github.com/thomasp85/patchwork)
+figure. There are several ways you can perform this, but today we will be using the `cowplot` [package](https://github.com/wilkelab/cowplot)
 
-> ## Installing `patchwork`
-> `patchwork` is not available on CRAN and so `install.packages("patchwork")` will fail. Instead, you
-> will need to install it directly from GitHub if you wish to try it out. To do this, you will first
-> need to install the `remotes` package:
+> ## Installing `cowplot`
+> `cowplot` is not part of the tidyverse, and so you will need to install it separately if you 
+> want to make multi-panel figures. Install `cowplot` by running the following code **once** on your
+> computer:
 > ~~~~~~~
-> install.packages("remotes")
+> install.packages("cowplot")
 > ~~~~~~~
-> {:.language-r}
-> which will let you install packages from a GitHub repository:
+> {: .language-r}
+> And remember that you will need to load it with `library()` **each time** you wish to use it in a
+> script:
 > ~~~~~~~
-> remotes::install_github("thomasp85/patchwork")
+> library(cowplot)
 > ~~~~~~~
-> {:.language-r}
->
-> Installing from GitHub can open up a wider range of functionality than is available through packages 
-> on CRAN. However these packages have not gone through any vetting process, so there is no guarantee
-> that they will function correctly or be well documented.
+> {: .language-r}
 {:.callout}
 
-Combining figures using `patchwork` is performed by adding them together:
+The `plot_grid()` function from `cowplot` allows you to combine multiple ggplot objects into a 
+single figure. Save each individual plot into a variable and provide them all as arguments to
+`plot_grid()`:
 
-```{r patchwork}
-library(patchwork)
+```{r cowplot, message=FALSE, warning=FALSE}
+library(cowplot)
 
+# Making some plots
 plot1 <- ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + geom_point()
-plot2 <- ggplot(gapminder, aes(x = lifeExp, y = pop)) + geom_point()
-plot3 <- ggplot(gapminder, aes(x = continent, y = lifeExp)) + geom_boxplot()
-plot4 <- ggplot(gapminder, aes(x = gdpPercap, y = pop)) + geom_point()
+plot2 <- ggplot(gapminder, aes(x = continent, y = lifeExp)) + geom_boxplot()
+plot3 <- ggplot(gapminder, aes(x = gdpPercap, y = pop)) + geom_point()
+plot4 <- ggplot(gapminder, aes(x = lifeExp, y = pop)) + geom_point()
 
-plot1 + plot2 + plot3 + plot4
+# Combining them into one
+plot_grid(plot1, plot2, plot3, plot4)
 ```
 
-You can control how the plots are laid out by adding a `plot_layout()` layer.
+By default, each panel is given the same size. You can adjust this using the `rel_heights` or `rel_widths`
+argument. Provide this argument a vector of numbers of relative sizes for the rows (`rel_heights`)
+or columns (`rel_widths`) in the final figure.
 
-```{r patchwork_layout}
-plot1 + plot2 + plot3 + plot4 + plot_layout(heights = c(2,1))
+```{r cowplot_layout}
+plot_grid(plot1, plot2, plot3, plot4, rel_heights = c(1, 3))
 ```
 
-And label the subfigures by adding a `plot_annotation()` layer.
+The subfigures can be labelled with the `labels` argument. You can either provide the exact labels
+or use `"AUTO"` for uppercase letters as labels, and `"auto"` for lowercase letters.
 
-```{r patchwork_annot}
-plot1 + plot2 + plot3 + plot4 + plot_annotation(title = "Collection of plots", tag_levels = "A")
+```{r cowplot_annot}
+plot_grid(plot1, plot2, plot3, plot4, labels = "AUTO")
 ```
 
 This is a taste of what you can do with ggplot2. RStudio provides a
