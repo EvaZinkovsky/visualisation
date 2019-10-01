@@ -339,6 +339,24 @@ p1 + p2
 So this new concept extends our previous understanding of the visualisation process by affecting exactly
 how values of your data are assigned to values of the visual property.
 
+> ## Challenge
+> 
+> Which of the following are aesthetics?
+>
+> 1. Colour, size, shape
+> 2. X and Y axis
+> 3. Colour, size, shape, geometry
+> 4. Both (1) and (2)
+>
+>> ## Solution
+>> The correct answer is 4. From a 'grammer of graphics' framework, the X and Y axes are visual 
+>> elements just like colour, size, and shape. Geometry (e.g. lines, bars, points) is not - 
+>> it affects how your aesthetic mappings are displayed, not what the aesthetics themselves are. 
+> {: .solution}
+{: .challenge}
+ 
+## Scale 
+
 ![](../fig/grammar_scales.png)
 
 > ## New term
