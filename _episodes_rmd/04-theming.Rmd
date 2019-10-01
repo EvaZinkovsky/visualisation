@@ -262,6 +262,7 @@ code to modify!
 > was to work with data on board games that was used in an [article at FiveThirtyEight](https://fivethirtyeight.com/features/designing-the-best-board-game-on-the-planet/)
 >
 > Working in small groups:
+> 
 > 1) Map out the elements of the three graphs from the article
 > 
 > 2) Download the data using
@@ -281,22 +282,69 @@ code to modify!
 {:.challenge}
 
 
-> ## Challenge 4
+> ## Challenge: putting it all together
 > We have previously worked with [meterological observations from the BOM](https://csiro-data-school.github.io/r/15-Reproducibility/index.html).
 > Let's return to this data and explore it visually.
 >
-> 1) Produce a scatter plot showing the relationship between each pair of the four meterological
-> observations -- Minimum temperature, Maximum temperature, Rainfall, and Solar Exposure. You will 
-> have six plots in total.
-> 
-> 2) Select four of these plots and save them as a multi-panel figure.
-> 
-> 3) Create a barplot showing the average monthly rainfall per state. Can you come up with a better 
-> way to display this information?
+> #### Getting the data
 >
-> 4) Select a single station and year. Produce a plot showing the minimum and maximum temperature
-> as well as the solar exposure over the year. Once you are satisfied with the plot for a single station,
-> use all data from that year and facet the plot by station name.
+> * Reopen your RStudio project working with the BOM meterological data
+> **OR**
+> * Revisit the [previous exercise](https://csiro-data-school.github.io/r/15-Reproducibility/index.html#challenge-putting-it-all-together)
+> for instructions on setting up and getting the data.
+>
+> #### Question 1
+> **For the Perth station (ID 9225), produce three scatter plots showing the relationship between
+> the maximum temperature and each other measurement recorded (minimum temperature, rainfall and 
+> solar exposure).**
+> 
+> > ## Hint
+> > Make sure your measurement values are all converted to numeric types with `as.numeric()`. They
+> > will have been imported as text values as part of the previous challenge.
+> > 
+> > To work with just the Perth measurements, make sure to `filter()` your dataset.
+> > 
+> > The only aesthetics you will need to map for this question are `x` and `y`. Then, a `geom_point()`
+> > layer will produce a scatterplot of the two mapped values.
+> {: .solution}
+> 
+> #### Question 2
+> **Display these four measurements for the Perth station in a single scatter plot by using additional 
+> aesthetic mappings.**
+> 
+> You may need to try a few different data/aesthetic mappings to find one you like.
+> > ## Hint
+> > The aesthetics that `geom_point()` can use are found in the help page (`?geom_point`) under
+> > the **Aesthetics** heading
+> {: .solution}
+> > ## Hint 2
+> > One possible solution is to map the temperature data to the `x`/`y` aesthetics, the rainfall to
+> > the `size` aesthetic, and the solar exposure to the `colour` aesthetic.
+> {: .solution}
+>
+> #### Question 3
+> **Take the four plots you have produced in Q1 and Q2 and save them as a multi-panel figure.** 
+>
+> > ## Hint
+> > The `ggsave()` function has a `width` and `height` argument to control how large a figure to create.
+> > This may be useful if your initial attempt at saving a figure looks too squashed.
+> {: .solution}
+>
+> #### Question 4
+> **Using the entire BOM dataset, calculate the average monthly rainfall for each station. Produce
+> a lineplot to visualise this data and the state each station is in.**
+> 
+> > ## Hint
+> > For the data manipulation, you will need to use `group_by()` with multiple variables, and then
+> > `summarise()` to get the averaged rainfall measurements. Then `join` in a data frame containing
+> > the metadata about each station to be able to know which state each station is in.
+> > 
+> > If your lines in the plot are looking a bit odd, you may need to use the `group` aesthetic to 
+> > make sure there is one line per station.
+> >
+> > There are many ways you could use to integrate the state information -- the `colour` and `linetype`
+> > aesthetics, or with by using faceting. Which do you find makes for a better plot?
+> {: .solution}
 {:.challenge}
 
 
