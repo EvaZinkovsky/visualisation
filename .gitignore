@@ -1,2 +1,6 @@
+.Rhistory
+_episodes_rmd/fig/*
+*.html
 *Rproj*
 _site*
+.Rproj.user
