@@ -120,11 +120,9 @@ not confuse or obscure.
 
 > ## Discussion - What makes an effective data visualisation?
 >
-> In 2015, the [Wall Street Journal published](http://graphics.wsj.com/infectious-diseases-and-vaccines/)
-> a series of data visualisations around disease incidence and vaccination in the USA. The graphic 
-> for measles is shown below:
->
-> !["Measles incidence and vaccination"](../fig/wsj_measles.png){:class="fig-responsive" style="max-width:70%"}
+> The figure below is from an [Axios article](https://www.axios.com/the-state-of-the-space-race-in-1-chart-1516917901-0bf90c42-25c6-4c98-a29f-d000e43e342a.html)
+> about satellite launches.
+> !["State of the space race"](../fig/space-race.jpg){:class="fig-responsive" style="max-width:70%"}
 > 
 > How effective is this visualisation at conveying the story of the dataset, and what features do 
 > you feel contribute to that success?
