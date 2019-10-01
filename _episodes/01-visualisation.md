@@ -332,7 +332,7 @@ how values of your data are assigned to values of the visual property.
 >
 > 1. Colour, size, shape
 > 2. X and Y axis
-> 3. Colour, size, shape, geometry
+> 3. Points, lines and bars
 > 4. Both (1) and (2)
 >
 >> ## Solution
