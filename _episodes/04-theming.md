@@ -235,19 +235,7 @@ single figure. Save each individual plot into a variable and provide them all as
 
 ~~~
 library(cowplot)
-~~~
-{: .language-r}
 
-
-
-~~~
-Error in library(cowplot): there is no package called 'cowplot'
-~~~
-{: .error}
-
-
-
-~~~
 # Making some plots
 plot1 <- ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + geom_point()
 plot2 <- ggplot(gapminder, aes(x = continent, y = lifeExp)) + geom_boxplot()
@@ -259,12 +247,7 @@ plot_grid(plot1, plot2, plot3, plot4)
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in plot_grid(plot1, plot2, plot3, plot4): could not find function "plot_grid"
-~~~
-{: .error}
+<img src="../fig/rmd-04-cowplot-1.png" title="plot of chunk cowplot" alt="plot of chunk cowplot" width="612" style="display: block; margin: auto;" />
 
 By default, each panel is given the same size. You can adjust this using the `rel_heights` or `rel_widths`
 argument. Provide this argument a vector of numbers of relative sizes for the rows (`rel_heights`)
@@ -276,12 +259,7 @@ plot_grid(plot1, plot2, plot3, plot4, rel_heights = c(1, 3))
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in plot_grid(plot1, plot2, plot3, plot4, rel_heights = c(1, 3)): could not find function "plot_grid"
-~~~
-{: .error}
+<img src="../fig/rmd-04-cowplot_layout-1.png" title="plot of chunk cowplot_layout" alt="plot of chunk cowplot_layout" width="612" style="display: block; margin: auto;" />
 
 The subfigures can be labelled with the `labels` argument. You can either provide the exact labels
 or use `"AUTO"` for uppercase letters as labels, and `"auto"` for lowercase letters.
@@ -292,12 +270,7 @@ plot_grid(plot1, plot2, plot3, plot4, labels = "AUTO")
 ~~~
 {: .language-r}
 
-
-
-~~~
-Error in plot_grid(plot1, plot2, plot3, plot4, labels = "AUTO"): could not find function "plot_grid"
-~~~
-{: .error}
+<img src="../fig/rmd-04-cowplot_annot-1.png" title="plot of chunk cowplot_annot" alt="plot of chunk cowplot_annot" width="612" style="display: block; margin: auto;" />
 
 This is a taste of what you can do with ggplot2. RStudio provides a
 really useful [cheat sheet][cheat] of the different layers available, and more
