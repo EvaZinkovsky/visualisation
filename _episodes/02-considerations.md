@@ -164,13 +164,6 @@ By putting your raw data into a figure, it becomes easier to see the true patter
 Remember with the datasaurus dozen dataset where summary statistics obscured the true meaning in the
 data.
 
-
-~~~
-Warning: Computation failed in `stat_summary()`:
-Hmisc package required for this function
-~~~
-{: .error}
-
 <img src="../fig/rmd-02-show_raw-1.png" title="plot of chunk show_raw" alt="plot of chunk show_raw" width="100%" style="display: block; margin: auto;" />
 
 > ## Discussion
