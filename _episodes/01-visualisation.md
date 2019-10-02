@@ -410,12 +410,6 @@ is exactly the sasme distance as between -50 and 0 on the y axis.
 While this might seem like a small change, changing the coordinate system can have a drastic effect
 on the presentation of your data and how it is interpreted.
 
-
-~~~
-Error in loadNamespace(name): there is no package called 'mapproj'
-~~~
-{: .error}
-
 <img src="../fig/rmd-01-coord_more-1.png" title="plot of chunk coord_more" alt="plot of chunk coord_more" width="100%" style="display: block; margin: auto;" />
 
 > ## Discussion
