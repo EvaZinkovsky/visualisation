@@ -369,8 +369,13 @@ code to modify!
 > > make sure there is one line per station.
 > >
 > > There are many ways you could use to integrate the state information -- the `colour` and `linetype`
-> > aesthetics, or with by using faceting. Which do you find makes for a better plot?
+> > aesthetics, or by using faceting. Which do you find makes for a better plot?
 > {: .solution}
+>
+> #### Question 5
+> **Produce a plot of an interesting relationship you have found while exploring the dataset. Describe the
+> message your plot is meant to convey to a viewer and the choices you made during the visualisation 
+> process to make your visualisation more effective at getting that message across.**
 {:.challenge}
 
 
