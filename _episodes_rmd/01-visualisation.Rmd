@@ -1,17 +1,18 @@
 ---
-title: Introduction to Visualisation
-teaching: 120
-exercises: 120
-questions:
-- "What are the basic building blocks of visualisation"
-objectives:
-- "To be able to identify the links between a data visualisation and the underlying data structure"
-- "To recognise the common visual features of a visualisation"
+title: "Introduction to Visualisation"
 keypoints:
-- "Visualisation is valuable"
-- "There are common elements that link data to visual properties"
-- "By mapping data attributes to visual attributes clearer visualisation is possible"
+- "Visualisation is very valuable in data representation and investigation"
+- "A picture paints a thousand data points"
+- "Don't use rainbow colour scales!"
+- "Simple but powerful"
+objectives:
+- "Choosing an effective data visualisation"
+questions:
+- "Why do we visualise data?"
+- "What are some common errors in visualisation?"
 source: Rmd
+teaching: 50
+exercises: 20
 ---
 
 ```{r chunk_options, include=FALSE}
@@ -29,7 +30,7 @@ library(ggthemes)
 library(patchwork)
 
 data <- read_csv("../data/datasets.csv")
-data_12 <- data %>% 
+data_12 <- data %>%
   filter(dataset != 4)
 data_dino <- data %>%
   filter(dataset == 4)
@@ -42,28 +43,29 @@ comb2pngs <- function(imgs, bottom_text = NULL){
 }
 ```
 
-## Why visualisation?
+## Why do we visualise data?
 
-We have spent a lot of time learning about manipulating and exploring data. What sort of information
-can we learn like that?
+What do you do when you first explore a dataset in R? Perhaps look inside the data structure to see what kind of data is there.  Perhaps run summary statistics to get an idea of the value ranges.  But can you really see if the data is telling a hidden story?
 
-Let's meet some datasets:
+
+```{r dino_scatter, echo=FALSE, out.width="50%"}
+ggplot(data_dino, aes(x, y)) +
+  geom_point() +
+  theme(aspect.ratio = 1)
+```
+
+
+In this example, we've loaded a data file with a number of datasets, each with x and y values.
 
 ```{r intro, echo=FALSE}
 data
 ```
 
-Get an idea of their overall structure:
-
-```{r summary}
-summary(data)
-```
-
-And some summary statistics for each dataset:
+By running a statistics summary on each dataset, we get exactly the same statistics for `mean` and `sd`.  Does this mean the data is all the same?
 
 ```{r summ_stats}
-data %>% 
-  group_by(dataset) %>% 
+data %>%
+  group_by(dataset) %>%
   summarise(
     mean_x = mean(x),
     mean_y = mean(y),
@@ -74,455 +76,260 @@ data %>%
 ```
 
 > ## Challenge 1
-> What can we say about these datasets just from looking at their summaries?
+> How could we tell if the datasets actually have the same values?
+> > ## Solution
+> > We'll plot them!
+> > And it immediately becomes apparent that the datasets **are** different.
+> > These data sets are known as [the datasaurus dozen](https://www.autodeskresearch.com/publications/samestats).
+> > A group of 12 two-dimensional datasets that have identical:
+> >
+> > * mean in both dimensions
+> > * sd in both dimensions
+> > * correlation between x and y
+> >
+> > ```{r scatter12, echo=FALSE, out.width="60%"}
+> >   ggplot(data_12, aes(x, y)) +
+> >   geom_point() +
+> >   facet_wrap(~dataset) +
+> >   theme(aspect.ratio = 1)
+> > ```
+>{: .solution}
 {:.challenge}
 
-Let's try plotting one of them to see if we can spot anything new:
 
-```{r dino_scatter, echo=FALSE, out.width="60%"}
-ggplot(data_dino, aes(x, y)) +
-  geom_point() +
-  theme(aspect.ratio = 1)
-```
+## Role of data visualisation
 
-And it immediately becomes apparent what all those numbers **mean**
-
-The other data sets we looked at are known as [the datasaurus dozen](https://www.autodeskresearch.com/publications/samestats). A group of 12 two-dimensional datasets that have identical:
-
-* mean in both dimensions
-* sd in both dimensions
-* correlation between x and y
-
-**But...**
-
-```{r scatter12, echo=FALSE, out.width="60%"}
-ggplot(data_12, aes(x, y)) +
-  geom_point() +
-  facet_wrap(~dataset) +
-  theme(aspect.ratio = 1)
-```
-
-> ## Discussion - What is a data visualisation? 
-> 
-> What is the difference between panel E and the other panels in the following figure?
-> 
-> !["Plot vs diagram"](../fig/diagram_plot.PNG){:class="fig-responsive" style="max-width:60%"}
-{: .discussion}
-
-## The roles of data visualisation 
-
-In general there are two purposes behind data visualisations:
+In general, there are two roles of data visualisations:
 
 * As a discovery tool, to explore a dataset
 * As a storytelling tool, to highlight features of a dataset
 
-In both cases, a successful visualisation will illuminate and aid understanding, 
-not confuse or obscure.
+An effective data visualisation brings the data to life thus aiding the viewer's understanding of patterns, trends and outliers inherent in the dataset.
 
 > ## Discussion - What makes an effective data visualisation?
 >
 > The figure below is from an [Axios article](https://www.axios.com/the-state-of-the-space-race-in-1-chart-1516917901-0bf90c42-25c6-4c98-a29f-d000e43e342a.html)
 > about satellite launches.
 > !["State of the space race"](../fig/space-race.jpg){:class="fig-responsive" style="max-width:70%"}
-> 
-> How effective is this visualisation at conveying the story of the dataset, and what features do 
+>
+> How effective is this visualisation at conveying the story of the dataset, and what features do
 > you feel contribute to that success?
 {: .discussion}
 
-## Talking about visualisations
+## Designing effective visualisations
 
-Our goal today will be to learn how to **describe** visualisations and their connections to data.
-We will build up a consistent vocabulary around visualisations that can be used to describe and create
-complex visualisations out of a series of simple tools.
+While by no means a comprehensive list, there are a number of things you might want to think about
+when constructing a visualisation of your own.
 
-The big concept of the day is any plot can be constructed by mapping variables in your **data** to 
-visual properties (**aesthetics**) which are then applied to the physical marks (**geometries**) chosen
-to represent the data
+### Avoid displaying a data variable in multiple ways
 
-#### Process outline
-![](../fig/grammar_simple.png)
+Think back to the exercise on the 3D bar chart:
+![](../fig/mayer2017.PNG){:class="fig-responsive" style="max-width:60%"}
 
+The same variable was mapped to both the z axis and the bar colour, creating a redundancy. This is not necessarily a problem, but can usually be avoided without losing any clarity in the plot. Cutting out the redundancy also frees up a visual property to encode new information if you are looking to
+show the relationships between more data.
 
-> ## New terms
-> **Aesthetic:**
-> 
-> A visual property of the elements in a figure. Colour, size, and shape are all examples of 
-> aesthetics that affect the way your figure is displayed.
->
->
-> **Geometry:**
->
-> The physical representation of your data. Points, lines, and bars are examples of geometries
-> that could be used to illustrate the data in a figure.
-{:.callout}
+### Avoid using multiple displays for one data variable
 
-This will probably be a very big change in how you think about figures, let's try it on a few examples.
+Consider the following figure from [Spurious Correlations](https://tylervigen.com/spurious-correlations)
 
-## Straight to a classic
-[![minard](../fig/minard.png)](../fig/minard.png)
-
+![](../fig/dual_y.png){:class="fig-responsive" style="max-width:100%"}
 > ## Challenge
->
-> List the data elements contributing to this plot?
->
-> **Hint:** One way to answer this is to ask yourself what the column names in the underlying 
-> data frame might be.
->
-> 
-> What are some of the visual properties (aesthetics) used to convey this information?
->
->
-> Which aesthetics are linked with which data variables?
+> Draw out the links between data variable and different displays in this figure. What is strange
+> about this?
 > > ## Solution
-> > The major variable/aethetic mappings are:
-> > 
-> > **Data Variable** | **Visual Component**
-> > Longitude | x Axis
-> > Latitude | y Axis
-> > Number of troops | Line width
-> > Direction of travel | Line colour
-> > Temperature | y Axis (bottom chart)
-> > Date | Text 
-> >
->{: .solution}
-{: .challenge}
-
-Part of the reason this is a classic example of data visualisation is because of how information 
-dense the image is and how clearly it conveys different elements of the data. Let's try the same 
-approach with a more recent figure.
-
-> ## A modern example?
-> 
-> ![](../fig/mayer2017.PNG){:class="fig-responsive" style="max-width:60%"}
-> 
-> List the data elements and visual aesthetics of the above figure. 
-> 
-> How they are linked together?
-> > ## Solution
-> > 
-> > **Data Variable** | **Visual Component**
-> > :---------|:-----------
-> > No. landraces (l) | x Axis
-> > No. gametes per landrace (g) | y Axis
-> > r^2 decay distance | z Axis
-> > r^2 decay distance | Bar colour
-> >
-> {: .solution}
-{: .challenge}
-
-Working on a single figure at a time doesn't give a good idea of how *changes* to the aesthetics or
-geometries can affect a figure. Changing either of these components can hide or reveal information, 
-and can sometimes completely change the story your figure is telling.
-
-Consider the following set:
-
-#### Changing aesthetics 
-```{r changing_aesthetics, echo = F, out.width="100%", warning=F, fig.height=4}
-p <- ggplot(mtcars) + labs(x="weight", y="fuel efficiency (mpg)", colour="cylinders") + theme(legend.position = "bottom")
-
-p1 <- p + geom_point(aes(x=wt, y = mpg, colour = factor(cyl)))
-
-p2 <- p + geom_point(aes(x=wt, y = mpg, size = factor(cyl))) + labs(size = "cylinders")
-
-p3 <- p + geom_point(aes(x=wt, y = cyl, colour = mpg)) + 
-  labs(x="weight", y="cylinders", colour="fuel efficiency (mpg)") +
-  scale_color_viridis_c()
-
-p1 + p2 + p3
-```
-
-
-> ## Challenge
-> 
-> List the data elements, visual aesthetics, and geometries of the above figure to convince yourself
-> that the only changes are in the **mappings** of the data to aesthetics. 
->
-> > ## Solution
-> > Left figure:
-> >
-> > **Data Variable** | **Aesthetic**
-> > :---------|:-----------
-> > Weight | x Axis
-> > Fuel efficiency | y Axis
-> > No. of cylinders | Colour
-> >
-> > Middle Figure:
-> >
-> > **Data Variable** | **Aesthetic**
-> > :---------|:-----------
-> > Weight | x Axis
-> > Fuel efficiency | y Axis
-> > No. of cylinders | Size
-> >
-> > Right figure:
-> >
-> > **Data Variable** | **Aesthetic**
-> > :---------|:-----------
-> > Weight | x Axis
-> > No. of cylinders | y Asis
-> > Fuel efficiency | Colour
-> >
-> > Each of these figures uses a **point** geometry
->{:.solution}
-{:.challenge}
-
-#### Changing geometries
-
-```{r changing_geometries, echo = F, out.width="100%", warning=F, fig.height=4}
-base_geom <- agridat::harris.wateruse %>% 
-  group_by(species, day) %>% 
-  summarise(mean_water_use = mean(water)) %>% 
-  ungroup %>% 
-  filter(day > 270) %>% 
-  ggplot(aes(x=day, y = mean_water_use, fill = species, colour = species)) +
-  labs(y = "mean water use") +
-  scale_color_brewer(palette="Dark2") +
-  scale_fill_brewer(palette="Dark2") +
-  theme(legend.position = "bottom")
-
-p1 <- base_geom + geom_col(position = "dodge")
-p2 <- base_geom + geom_line()
-p3 <- base_geom + geom_point()
-
-p1 + p2 + p3
-```
-
-> ## Challenge
-> 
-> Compare the three plots above
->
-> - How are the data elements linked to the visual elements?
-> - What is the difference between the three?
-> - Do any of them tell a story more clearly?
->
-> > ## Solution
-> > All figures have the same aesthetic mapping:
-> >
-> > **Data Variable** | **Aesthetic**
-> > :---------|:-----------
-> > Day | x Axis
-> > Mean water use | y Axis
-> > Species | Colour
-> >
-> > But each of them uses a different geometry to represent this data. Bars, lines, and points from
-> > left to right.
->{:.solution}
-{:.challenge}
-
-> ## Challenge
-> 
-> Which of the following are aesthetics?
->
-> 1. Colour, size, shape
-> 2. X and Y axis
-> 3. Points, lines and bars
-> 4. Both (1) and (2)
->
->> ## Solution
->> The correct answer is 4. From a 'grammer of graphics' framework, the X and Y axes are visual 
->> elements just like colour, size, and shape. Geometry (e.g. lines, bars, points) is not - 
->> it affects how your aesthetic mappings are displayed, not what the aesthetics themselves are. 
-> {: .solution}
-{: .challenge}
-
-## Scales 
-
-While the links between data, aesthetics, and geometries describe the core features of a visualisation,
-there are several other components that influence the final figure.
-
-Consider the following pair of plots:
-
-```{r scales_intro, echo=FALSE,  out.width="100%", fig.height=4}
-p1 <- ggplot(diamonds, aes(carat, price)) +
-  geom_point(size = 0.5)
-p2 <- p1 +
-  scale_y_log10() +
-  scale_x_log10() + annotation_logticks()
-
-p1 + p2
-```
-
-> ## Challenge 
-> 
-> Compare the two plots above
-> - How are the data elements linked to the visual elements?
-> - What term would you use to describe the difference between the two?
->
-> > ## Solution
-> > Each plot has exactly the same data, aesthetic mapping, and geometries.
-> > The only difference is that the x and y axis in the right hand figure is **scaled** logarithmically.
+> > There are two data variables that have both been mapped to the y axis.
 > {:.solution}
-{: .challenge}
+{:.challenge}
 
-So this new concept extends our previous understanding of the visualisation process by affecting exactly
-how values of your data are assigned to values of the visual property.
- 
-![](../fig/grammar_scales.png)
+By mapping two variables to the same display component we lose clarity in the plot. It takes time and mental effort to separate the same visual property back to two potential data sources.
 
-> ## New term
-> **Scale:**
-> 
-> Controls *how* data values get converted into their aesthetic values. For example, the scale of a
-> colour aesthetic determines what colours the data points are assigned to.
-{:.callout}
+In particular, if your two data sources are not on the same scale it can be very [easy to influence the interpretation](https://blog.datawrapper.de/dualaxis/) of the data by changing their scales separately.
 
-To demonstrate that scaling is affecting the mapping of data to aesthetics, consider the following 
-example:
+### Consider your plot types carefully
+One reason why there are so many types of plots is because different geometries can be interpreted
+very differently by the human brain, even though they display the same data. Perhaps the best example
+of this is bar charts, and the discussions around [whether they should always start at zero](https://flowingdata.com/2015/08/31/bar-chart-baselines-start-at-zero/).
 
-```{r scales_v_data, echo=FALSE,  out.width="100%", fig.height=4}
-p1 <- ggplot(diamonds, aes(carat, price)) +
-  geom_point(size = 0.5) + labs(title = "Untransformed")
-p2 <- ggplot(diamonds, aes(log10(carat), log10(price))) +
-  geom_point(size = 0.5) + labs(title = "Transformed data")
-p3 <- p1 +
-  scale_y_log10() +
-  scale_x_log10() + annotation_logticks() + labs(title = "Transformed scale")
+When looking at a bar chart, the *length* of the bar is what determines how people interpret the data.
+This differs from an equivalent chart that used points in which the *position* of the point is what
+matters. Changing the baseline of a bar chart can drastically alter how the chart gets interpreted:
+
+```{r bar_zero, echo=FALSE, out.width="100%", fig.height=4}
+p <- tibble(x = c("A","B"), y = c(90,100)) %>% ggplot(aes(x,y)) + geom_col()
+
+p1 <- p + scale_y_continuous(expand = expand_scale(mult = c(0,0.05)))
+p2 <- p + coord_cartesian(ylim = c(80,100))
+p3 <- p + coord_cartesian(ylim = c(89, 100))
 
 p1 + p2 + p3
 ```
 
-In one of these, the *data* is transformed before plotting. In the other, the data values are left 
-unchanged and just the *scaling* as to how those data points are mapped to the x and y axis is altered.
+This can be seen even more readily when the shape chosen is more easily mapped to a real, physical
+object.
 
-Do you find each option easier or harder to interpret?
-
-Scales apply to all visual properties, with colour being the easiest to observe differences:
-
-```{r colour_scale, echo = FALSE, out.width="100%", fig.height=4}
-p <- mtcars %>% ggplot(aes(x = wt, y = mpg)) + 
-  labs(x="weight", y="fuel efficiency (mpg)", colour="cylinders") + 
-  theme(legend.position = "bottom") 
-
-p1 <- p + geom_point(aes(colour = cyl)) 
-p2 <- p + geom_point(aes(colour = factor(cyl)))
-p3 <- p + geom_point(aes(colour = factor(cyl))) + scale_color_brewer(palette="Dark2")
-
-p1 + p2 + p3 + plot_annotation(tag_levels = "A")
-```
-
-In this example, the cylinder variable is mapped to three different colour scales. One continuous 
-(**A**) in which the values of cylinder are mapped to a spectrum of dark to light blue. The other 
-two are categorical (**B**, **C**) in which the unique values of cylinder are mapped to individual 
-colour values. The specific colour values are determined by the scale and are different between the 
-two plots.
-
-The choice of scale for your visualisations will depend on your data. Are they continuous or 
-categorical? Can they be mapped directly onto an appropriate scale, or would a transformed scale
-better represent the data?
-
-
-## Coordinates
-
-As with scales controlling the conceptual mapping of data to a visual property, coordinates control 
-the physical mapping of geometries to positions on a screen/page.
-
-![](../fig/grammar_coord.png)
-
-> ## New term
-> **Coordinate system:**
-> 
-> Controls how the points, lines, bars etc. of a visualisation get placed in physical space. 
-{:.callout}
-
-The coordinate system you are most familiar with is the Cartesian coordinate system. This is the x/y
-two dimensional plane that has been used in the examples so far. 
-
-A simple modification we could make to this system is to enforce a condition on the coordinates that
-our two dimensions have to be equal. In other words, a unit of length along the x axis is the same 
-physical distance as a unit of length along the y axis:
-
-```{r coord_fixed, echo = FALSE, out.width="100%", fig.height=4}
-p <- tibble(x = seq(-80,80, 10), y = seq(-80,80, 10)) %>% 
-  expand(x,y) %>% 
-  filter(x>=-50, x <= 50) %>% 
-  ggplot(aes(x,y, colour = y)) + 
-  geom_point() +
-  theme(legend.position = "none")
-
-p2 <- p + coord_fixed()
-
-p + p2
-```
-
-In this example, you can see that on the right hand figure, the distance between -50 and 0 on the x axis
-is exactly the sasme distance as between -50 and 0 on the y axis.
+![](../fig/bad_chart.jpeg){:class="fig-responsive" style="max-width:60%"}
 
 > ## Discussion
-> Why might you choose to enforce this restriction on the coordinate system?
-{: .discussion}
+> Are there any other features of this figure that make it an ineffective visualisation?
+{:.discussion}
 
-While this might seem like a small change, changing the coordinate system can have a drastic effect
-on the presentation of your data and how it is interpreted.
+## Colour
 
-```{r coord_more, echo = FALSE, out.width="100%", fig.height=4}
-p3 <- p + coord_polar() + labs(title = "Polar coordinates")
+### Friends don't let friends use rainbow colour scales
 
-p4 <- p + coord_map(projection = "gilbert") + labs(title = "Map projection")
+Rainbow colour scales are very, very common in scientific literature. They are a very natural way to represent quantitative data - the wavelength of the colour changes in a linear relationship with the data.
 
-p3 + p4
+The problem is that our eyes don't perceive those changes in colour in a uniform way.
+
+```{r rainbow, echo=FALSE, fig.height=4}
+color.bar <- function(lut, min, max=-min, nticks=11, ticks=seq(min, max, len=nticks), title='') {
+    scale = (length(lut)-1)/(max-min)
+
+    dev.new(width=1.75, height=5)
+    plot(c(0,10), c(min,max), type='n', bty='n', xaxt='n', xlab='', yaxt='n', ylab='', main=title)
+    axis(2, ticks, las=1)
+    for (i in 1:(length(lut)-1)) {
+     y = (i-1)/scale + min
+     rect(0,y,10,y+1/scale, col=lut[i], border=NA)
+    }
+}
+
+color.bar(rainbow(100), 0, 1)
 ```
 
-> ## Discussion
-> The two plots above show exactly the same data as the grid previously. Do the changed coordinates
-> change how you might interpret the data?
-{: .discussion}
+![rainbow-colourbar](../fig/rainbow-colourbar.PNG){:class="fig-responsive" style="max-width:60%"}
 
-## Applying your visualisation vocabulary
+This can have serious real world consequences for scientific data visualisation.
 
-By now you have developed a vocabulary that will let you talk consistently about figures. Time to try
-it out on something you are familiar with.
+![rainbow-problems](../fig/rainbow-01.PNG)
 
-> ## Challenge
-> Select a figure you have produced, or one that you have seen and thought was very effective. 
->
-> Describe the **data** they contain, how that data is mapped to the visual **aesthetics** and what
-> **geometries** were chosen to represent the data. Did you have to consider the **scale** or
-> **coordinate system** for the figure to get your deired point across?
->
-> Find a partner and share your figure and description. Do your figures share any common features?
-{: .challenge}
+The plot on the left was published in a [paper in 2006](https://www.atmos-chem-phys.net/6/5183/2006/) using a rainbow colour scale, and reproduced in a sequential colour scale on the right (from [https://www.atmos-chem-phys.net/6/5183/2006/](https://www.atmos-chem-phys.net/6/5183/2006/).
 
-This process allows you to decsribe a figure even if you are not familiar with how to create it.
+In the versions below, the blue line represent a false boundary that was identified in the data, entirely due to the way our eyes perceive colour - it isn't actually present in the data!
 
-> ## Challenge - Advanced
-> Consider the following visualisation from The Guardian showing the [change in voting patterns at
-> the 2018 US elections](https://www.theguardian.com/us-news/ng-interactive/2018/nov/07/blue-wave-or-blue-ripple-a-visual-guide-to-the-democrats-gains):
-> <iframe height="600" src="https://interactive.guim.co.uk/uploader/embed/2018/11/swing-zip/giv-3902uF0MQNdI60jh/" style="width: 100%; border: 1px;"></iframe>
->
-> How would you describe this visualisation?
-> 
-> **Hint:** You will need to create a new type of geometry that we haven't discussed to describe 
-> this. What might you call it and what aesthetics will it use?
-{: .challenge}
+![rainbow-problems2](../fig/rainbow-02.PNG)
 
-## That special something
-Until now, everything we have discussed has had some *functional* role in creating a figure. We have 
-been talking about how to display our data with a visual representation that allows us to understand
-the features of our data. There are a lot of other aspects to a plot that can affect the final look 
-however.
+It's not just continuous rainbow colour scales that have this problem. Once you start looking for them, you will see them everywhere.
+
+[One of the worst offenders.](http://bom.gov.au/products/IDR403.loop.shtml)
+
+### Other colour considerations
+
+Aside from the evils of rainbow colour scales, it is also important to consider issues such as:
+- colour blindness
+- reproduction of figures in monotone (black and white)
+- using too many colours for them to be distinguished from each other
+
+An excellent resource for many considerations to do with colour in visualisation is [ColorBrewer](http://colorbrewer2.org/), which provides a range of scales for different applications.
 
 > ## Challenge
-> What changes between the following plots? What term would *you* use to describe these features?
-> 
-> ```{r themes, echo = FALSE, out.width="70%", fig.height=6}
-> p1 <- ggplot(mtcars, aes(x = wt, y = mpg, colour = factor(cyl))) + geom_point() + labs(title = "Example plot") + theme(legend.position = "none")
-> 
-> p2 <- p1 + theme_wsj() + scale_colour_wsj() + theme(legend.position = "none")
-> p3 <- p1 + theme_fivethirtyeight() + scale_colour_fivethirtyeight() + theme(legend.position = "none")
-> p4 <- p1 + theme_economist() + scale_colour_economist() + theme(legend.position = "none")
-> 
-> p1 + p2 + p3 + p4 + plot_layout(nrow=2)
-> ```
+> Explore [ColorBrewer](http://colorbrewer2.org/) to understand how it can be used to choose colour
+> palettes. If you had four categories in your data to be represented by colour, how many palettes
+> can you find that are colourblind friendly for each of the sequential, diverging, and qualitative
+> palettes?
+>
+> > ## Solution
+> > Sequential: 18
+> >
+> > Diverging: 6
+> >
+> > Qualitative: 1
+> {:.solution}
 {:.challenge}
 
-These aspects to not change the data elements of a figure, but do have an impact on how the plot looks.
-We will refer to these as the **theme** of a visualisation.
+## Ink to information ratio
 
-![](../fig/grammar_theme.png)
+Compare the amount of ink used with the amount of information communicated. A high ink:information can indicate a plot that hasn't been thought through, and is often distracting or confusing. This is a
+good prism to evaluate your plots and assess the inclusion of each component. Everything in a plot
+should be there for a reason.
 
-> ## New term
-> **Theme:**
-> 
-> Any non-data element of a visualisation. Changing these can still have a dramatic effect on the 
-> final presentation of the figure.. 
-{:.callout}
+These plots often contain 'chart junk' (Edward Tufte).
+<img src="../fig/high-ink.PNG" width="425"/> <img src="../fig/low-ink.PNG" width="425"/>
+
+> ## Challenge
+>
+> Compare the above figure.
+> - Which elements are removed in the second version?
+> - Which elements could still be removed? What is their purpose?
+{: .challenge}
+
+## Show as much raw data as possible
+
+By putting your raw data into a figure, it becomes easier to see the true patterns in the data.
+Remember with the datasaurus dozen dataset where summary statistics obscured the true meaning in the
+data.
+
+```{r show_raw, echo = F, out.width="100%", fig.height=4}
+base_p <- data %>% mutate(dataset = as.factor(dataset)) %>% ggplot(aes(x=dataset, y = y))
+
+p1 <- base_p + stat_summary(fun.data = mean_cl_normal, colour = "red") + labs(title = "Mean and confidence interval", subtitle = "Two summary measurements") + scale_y_continuous(limits = c(0,100))
+
+p2 <- base_p + geom_boxplot(aes(group = dataset))  + labs(title = "Boxplot", subtitle = "Five summary measurements")
+
+p3 <- base_p + geom_jitter(alpha = 0.3, width = 0.3)  + labs(title = "Raw data")
+
+p1 + p2 + p3
+```
+
+> ## Discussion
+> How do your interpretations of the data change in the above plots as you move closer towards the raw data?
+{:.discussion}
+
+### Overplotting
+
+As a result of the suggestion to show your raw data, you will quickly run into the problem of **overplotting** when there are too many data points...
+
+```{r echo=FALSE, out.width="70%"}
+ggplot(diamonds, aes(carat, price)) +
+  geom_point() +
+  scale_y_log10() +
+  scale_x_log10()
+```
+> ## Discussion
+>
+> What are some possible solutions to overplotting?
+{: .discussion}
+
+#### Transparency
+
+```{r echo=FALSE, out.width="70%"}
+ggplot(diamonds, aes(carat, price)) +
+  geom_point(alpha = 0.05) +
+  scale_y_log10() +
+  scale_x_log10()
+```
+
+#### Jittering
+
+```{r echo=FALSE, fig.width=15, out.width="70%"}
+p1 <- ggplot(diamonds, aes(cut, price)) +
+  geom_point()
+p2 <- ggplot(diamonds, aes(cut, price)) +
+  geom_point(position = "jitter")
+grid.arrange(p1, p2, ncol = 2)
+```
+
+#### Binning
+
+By binning and counting the data points you start to step away from displaying the raw data.
+But when you have large datasets to show, it may be the best solution.
+```{r echo=FALSE, out.width="70%"}
+ggplot(diamonds, aes(carat, price)) +
+  geom_hex() +
+  scale_y_log10() +
+  scale_x_log10() +
+  scale_fill_viridis_c()
+```
+
+
+Remember that the goal of a visualisation is to explain some feature of a dataset. We want to make
+sure that our figures are clean, clear and easily ingerpretable. If unsure, ask someone with a fresh pair
+of eyes to look over your figure and see if they can explain what is going on.
+
+> ## Challenge
+> Go back to your own figure that you described in a previous challenge. Critically examine it for
+> areas that could be improved.
+>
+> Ask a partner to look over your figure and tell you what the main message is.
+{:.challenge}
